@@ -5,6 +5,7 @@
 [![Language](https://img.shields.io/badge/Language-French%20%7C%20Adaptable-purple.svg)](#language)
 
 # 🎙️ HomeCortex — Local Voice AI for Smart Home
+![homecortex](imgs/homecortex.jpg)
 
 > **A fully local, privacy-first voice assistant backend for Home Assistant.**  
 > No cloud. No subscriptions. No data leaving your network.
