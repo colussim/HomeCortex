@@ -1,19 +1,24 @@
-# 🎙️ Kira — Local Voice AI for Smart Home
-
-> **A fully local, privacy-first voice assistant backend for Home Assistant.**  
-> No cloud. No subscriptions. No data leaving your network.
-
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024+-orange.svg)](https://home-assistant.io)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/Language-French%20%7C%20Adaptable-purple.svg)](#language)
 
+# 🎙️ HomeCortex — Local Voice AI for Smart Home
+
+> **A fully local, privacy-first voice assistant backend for Home Assistant.**  
+> No cloud. No subscriptions. No data leaving your network.
+
+
+
 ---
 
-## ✨ What is Kira?
+## ✨ What is HomeCortex?
 
-Kira is an open-source voice assistant backend that runs **entirely on your hardware**. It connects ESP32-S3 voice satellites to your Home Assistant instance, processes natural language commands locally, and speaks back using a natural voice — all without sending a single byte to the cloud.
+HomeCortex is an open-source, self-hosted AI backend for smart homes. 
+It connects ESP32-S3 voice satellites to your Home Assistant instance, processes natural language locally using LLMs, and generates natural voice responses all without sending a single byte to the cloud.
+
+Kira is the default voice assistant powered by HomeCortex.
 
 ```
 You say: "Allume, Lampe Salon"      → Lamp turns on instantly
