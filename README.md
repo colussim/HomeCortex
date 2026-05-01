@@ -1,6 +1,6 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com)
-[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024+-orange.svg)](https://home-assistant.io)
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2026+-orange.svg)](https://home-assistant.io)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/Language-French%20%7C%20Adaptable-purple.svg)](#language)
 
