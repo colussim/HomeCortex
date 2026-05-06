@@ -1,0 +1,538 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/lang/fr.yaml — Mots-clés et textes en français
+# Changer LANGUAGE=en dans .env pour utiliser config/lang/en.yaml
+# ══════════════════════════════════════════════════════════════════════════════
+
+language: fr
+language_name: "Français"
+
+# ── Mots-clés Whisper hint (base) ─────────────────────────────────────────────
+whisper_hint_base: "allume, éteins, éteindre, éteint, ouvre, ferme, coupe, active, volet, lumière, salon, escalier, entrée, LoRa, gateway, Zigbee"
+
+# ── Verbes d'action HA ────────────────────────────────────────────────────────
+ha_action_verbs:
+  - "allume"
+  - "éteins"
+  - "eteins"
+  - "éteint"
+  - "eteint"
+  - "eteind"
+  - "éteinds"
+  - "ouvre"
+  - "ferme"
+  - "règle"
+  - "regle"
+  - "mets"
+  - "coupe"
+  - "active"
+  - "désactive"
+  - "desactive"
+  - "monte"
+  - "baisse"
+  - "pousse"
+  - "tire"
+
+# ── Mots-clés heure/date ──────────────────────────────────────────────────────
+time_keywords:
+  - "quelle heure"
+  - "il est quelle heure"
+  - "heure est-il"
+  - "quelle est l'heure"
+  - "quel jour"
+  - "quelle date"
+  - "on est quel jour"
+  - "on est le combien"
+  - "quel jour sommes-nous"
+  - "quelle heure sommes-nous"
+
+time_hour_keywords:
+  - "heure"
+  - "heure est-il"
+
+time_date_keywords:
+  - "date"
+  - "combien"
+  - "quel jour"
+
+# ── Mots-clés météo ───────────────────────────────────────────────────────────
+weather_keywords:
+  - "météo"
+  - "temps qu'il fait"
+  - "va-t-il pleuvoir"
+  - "prévision"
+  - "quel temps"
+  - "fait-il chaud"
+  - "fait-il froid"
+  - "température extérieure"
+  - "il fait chaud"
+  - "il fait froid"
+
+weather_tomorrow: "demain"
+weather_day_after: "après-demain"
+
+weather_cities:
+  - "genève"
+  - "geneva"
+  - "paris"
+  - "lyon"
+  - "lausanne"
+  - "zurich"
+  - "berne"
+  - "london"
+  - "berlin"
+
+# ── Questions d'état appareils ────────────────────────────────────────────────
+state_question_keywords:
+  - "est allumée"
+  - "est allumé"
+  - "est éteinte"
+  - "est éteint"
+  - "est ouverte"
+  - "est ouvert"
+  - "est fermée"
+  - "est fermé"
+  - "est connectée"
+  - "est connecté"
+  - "est-elle allumée"
+  - "est-il allumé"
+  - "quel est l'état"
+  - "statut de"
+  - "courrier"
+  - "colis"
+  - "boîte aux lettres"
+  - "boite aux lettres"
+
+# ── Questions capteurs ────────────────────────────────────────────────────────
+sensor_question_keywords:
+  - "température"
+  - "temp "
+  - "humidité"
+  - "co2"
+  - "consommation"
+  - "parking"
+  - "extérieur"
+  - "intérieur"
+
+sensor_question_markers:
+  - "quelle"
+  - "quel"
+  - "combien"
+  - "?"
+
+# ── Marqueurs de question ─────────────────────────────────────────────────────
+question_markers:
+  - "?"
+  - "est-ce que"
+  - "est ce que"
+  - "j'ai"
+  - "y a-t-il"
+  - "y a t il"
+  - "avez-vous"
+  - "as-tu"
+  - "a-t-on"
+
+# ── Patterns questions d'état (regex) ─────────────────────────────────────────
+state_regex_patterns:
+  - "est[- ]ce que"
+  - "est[- ]elle"
+  - "est[- ]il"
+  - "(?<![a-z])est allum[eé][e]?"
+  - "(?<![a-z])est [eé]tein[te]+"
+  - "(?<![a-z])est ouvert[e]?"
+  - "(?<![a-z])est ferm[eé][e]?"
+  - "(?<![a-z])est connect[eé][e]?"
+
+# ── Synonymes de normalisation ────────────────────────────────────────────────
+synonyms:
+  "lumière":   "lampe"
+  "lumieres":  "lampes"
+  "lumières":  "lampes"
+  "éclairage": "lampe"
+  "spot":      "lampe"
+  "ampoule":   "lampe"
+
+# ── Articles à supprimer pour le matching ────────────────────────────────────
+articles:
+  - "le "
+  - "la "
+  - "les "
+  - "l'"
+  - "un "
+  - "une "
+  - "des "
+  - "du "
+  - "de la "
+  - "de l'"
+
+# ── Réponses formatées ────────────────────────────────────────────────────────
+responses:
+  time_format:    "Il est {hour} heures {minute}."
+  date_format:    "Nous sommes le {weekday} {day} {month} {year}."
+  datetime_format: "Il est {hour} heures {minute}, le {weekday} {day} {month} {year}."
+
+  weekdays:
+    - "lundi"
+    - "mardi"
+    - "mercredi"
+    - "jeudi"
+    - "vendredi"
+    - "samedi"
+    - "dimanche"
+
+  months:
+    - "janvier"
+    - "février"
+    - "mars"
+    - "avril"
+    - "mai"
+    - "juin"
+    - "juillet"
+    - "août"
+    - "septembre"
+    - "octobre"
+    - "novembre"
+    - "décembre"
+
+# ── États HA (get_ha_state.py) ────────────────────────────────────────────────
+ha_states:
+  # Lampes / switches
+  light_on:         "allumée"
+  light_off:        "éteinte"
+  switch_on:        "allumée"
+  switch_off:       "éteinte"
+
+  # Volets / stores
+  cover_open:       "ouverte"
+  cover_closed:     "fermée"
+  cover_partial:    "ouverte à {position}%"
+
+  # Capteurs binaires
+  binary_on:        "activé"
+  binary_off:       "désactivé"
+  motion_on:        "détectée"
+  motion_off:       "aucun mouvement"
+  door_open:        "ouverte"
+  door_closed:      "fermée"
+  window_open:      "ouverte"
+  window_closed:    "fermée"
+
+  # Connectivité
+  connectivity_on:  "en ligne"
+  connectivity_off: "hors ligne"
+
+  # Boîte aux lettres
+  mail_detected:    "Oui, vous avez du courrier."
+  mail_empty:       "Non, aucun courrier détecté."
+  parcel_detected:  "Oui, un colis a été déposé."
+  parcel_empty:     "Non, aucun colis détecté."
+
+  # Phrases de réponse
+  light_reply:      "La {name} est {state}."
+  sensor_reply:     "La {type} {location} est de {value} {unit}."
+  cover_reply:      "Le {name} est {state}."
+  binary_reply:     "{name} est {state}."
+  unknown:          "Je n'ai pas pu obtenir l'état de {name}."
+  unavailable:      "{name} est indisponible."
+
+# ── Personnalisation avec prénom ──────────────────────────────────────────────
+personalization:
+  # Réponse courte → prénom à la fin
+  short_reply: "{reply}, {name}."
+  # Réponse longue → prénom au début
+  long_reply: "{name}, {reply_lower}"
+  # Seuil longueur courte/longue (caractères)
+  short_threshold: 40
+
+# ── detect_expect_reply ───────────────────────────────────────────────────────
+no_reply_patterns:
+  - "je n'ai pas reçu"
+  - "je n'ai pas compris"
+  - "je ne sais pas"
+  - "veuillez préciser"
+  - "quel appareil"
+  - "quelle pièce"
+  - "plusieurs appareils"
+
+question_regex_patterns:
+  - "\\blequel\\b"
+  - "\\blaquelle\\b"
+  - "\\blesquels\\b"
+  - "\\blesquelles\\b"
+  - "\\bquel\\b"
+  - "\\bquelle\\b"
+  - "\\bdans quelle\\b"
+  - "\\bdans quel\\b"
+  - "\\bvoulez-vous\\b"
+  - "\\bsouhaitez-vous\\b"
+  - "\\bpréférez-vous\\b"
+  - "\\bdésirez-vous\\b"
+  - "\\bpuis-je\\b"
+  - "\\bpuis je\\b"
+  - "\\bpouvez-vous préciser\\b"
+  - "\\bpouvez-vous confirmer\\b"
+
+# ── router_llm ────────────────────────────────────────────────────────────────
+speaker_context: "\nL'utilisateur s'appelle {name} (confiance: {conf}). Utilise son prénom naturellement dans ta réponse.\n"
+
+person_question_patterns:
+  - "qui est"
+  - "qu'est"
+  - "c'est qui"
+  - "connais-tu"
+  - "sais-tu"
+  - "parle-moi de"
+  - "raconte-moi"
+
+# ── Messages système ──────────────────────────────────────────────────────────
+tool_unknown:       "J'ai essayé d'utiliser un outil que je ne maîtrise pas encore."
+tool_no_result:     "Je n'ai pas pu obtenir l'information."
+idle_response:      "Je vous écoute."
+tool_reformulation: "Tu es Kira. Réponds UNIQUEMENT en {language_name}, jamais dans une autre langue. Reformule le résultat en une phrase naturelle courte. Pas de listes, pas de markdown, pas de symboles."
+
+# ── Bypass groupe pièces ─────────────────────────────────────────────────────
+group_lights_on:  "Les lampes de {room} sont allumées."
+group_lights_off: "Les lampes de {room} sont éteintes."
+time_hour_singular: "heure"
+time_hour_plural:   "heures"
+time_quarter_past:  "{h} {hu} et quart."
+time_half:          "{h} {hu} et demie."
+time_quarter_to:    "{h} {hu} moins le quart."
+time_exact:         "Il est {h} {hu} {m}."
+time_oclock:        "Il est {h} {hu}."
+
+# ── memory.py ─────────────────────────────────────────────────────────────────
+
+# Intents reconnus pour les statistiques
+intent_patterns:
+  météo:     ["météo", "temps", "température", "pluie", "vent", "soleil", "prévision"]
+  lumière:   ["lampe", "lumière", "allume", "éteins", "éclairage"]
+  volet:     ["volet", "store", "ouvre", "ferme"]
+  chauffage: ["chauffage", "thermostat", "température", "chaud", "froid"]
+  question:  ["qui", "quoi", "qu'est", "comment", "pourquoi", "quand", "où"]
+  identité:  ["kira", "tu es", "ton nom", "qui es-tu", "créé"]
+
+# Mots ignorés lors de l'extraction du canonical
+intent_stop_words:
+  - "quel"
+  - "quelle"
+  - "quels"
+  - "quelles"
+  - "este"
+  - "cette"
+  - "avec"
+  - "dans"
+  - "pour"
+  - "plus"
+  - "très"
+  - "bien"
+  - "faire"
+
+# Déclencheurs de mémorisation automatique
+fact_triggers:
+  - "souviens-toi"
+  - "n'oublie pas"
+  - "rappelle-toi"
+  - "je m'appelle"
+  - "mon nom est"
+  - "je préfère"
+  - "j'aime"
+  - "je n'aime pas"
+  - "j'habite"
+  - "ma pièce"
+  - "note que"
+  - "retiens que"
+  - "mémorise"
+
+# Contexte adaptatif injecté dans le prompt
+memory_habits_header: "HABITUDES APPRISES (basées sur l'historique réel) :"
+memory_facts_header:  "CE QUE TU SAIS SUR LA MAISON ET SES HABITANTS :"
+memory_habit_weather: "- Ville météo favorite : {city} ({count} demandes) -> utiliser par défaut si aucune ville mentionnée"
+memory_habit_action:  "- Action fréquente : {canonical} ({count} fois)"
+memory_habit_question: "- Question récurrente : {canonical} ({count} fois) -> répondre directement sans hésiter"
+
+# Intent météo pour la détection de ville favorite
+intent_weather_key: "météo"
+intent_light_key:   "lumière"
+intent_question_key: "question"
+
+# ── get_ha_state.py ───────────────────────────────────────────────────────────
+ha_unavailable:           "Connexion Home Assistant impossible."
+ha_entity_not_found:      "Je ne trouve pas l'entité {entity_id} dans Home Assistant."
+
+unit_labels:
+  "°C":   "degrés"
+  "°F":   "degrés Fahrenheit"
+  "%":    "pourcent"
+  "hPa":  "hectopascals"
+  "W":    "watts"
+  "kWh":  "kilowattheures"
+  "lx":   "lux"
+  "ppm":  "ppm"
+  "m/s":  "mètres par seconde"
+  "km/h": "kilomètres par heure"
+  "mm":   "millimètres"
+
+binary_state_labels:
+  "on":           "allumé"
+  "off":          "éteint"
+  "open":         "ouvert"
+  "closed":       "fermé"
+  "locked":       "verrouillé"
+  "unlocked":     "déverrouillé"
+  "home":         "présent"
+  "not_home":     "absent"
+  "true":         "activé"
+  "false":        "éteint"
+  "online":       "connectée"
+  "offline":      "déconnectée"
+  "connected":    "connecté"
+  "disconnected": "déconnecté"
+  "unavailable":  "non disponible"
+
+sensor_celsius_reply:     "La {name} est de {value} degrés."
+sensor_percent_reply:     "Le taux de {name} est de {value} pourcent."
+sensor_generic_reply:     "{name} : {value} {unit}."
+sensor_unavailable_reply: "La valeur de {name} n'est pas disponible."
+sensor_text_reply:        "{name} : {state}."
+
+light_on_reply:           "La {name} est allumée."
+light_off_reply:          "La {name} est éteinte."
+light_brightness_reply:   "La {name} est allumée à {pct} pourcent."
+
+switch_lamp_on:           "La {name} est allumée."
+switch_lamp_off:          "La {name} est éteinte."
+switch_on:                "La {name} est activée."
+switch_off:               "La {name} est éteinte."
+
+cover_open_pct:           "Le {name} est ouvert à {pos} pourcent."
+cover_open:               "Le {name} est ouvert."
+cover_closed:             "Le {name} est fermé."
+cover_opening:            "Le {name} est en train de s'ouvrir."
+cover_closing:            "Le {name} est en train de se fermer."
+cover_state:              "Le {name} est {state}."
+
+climate_reply:            "Le {name} : {parts}."
+climate_current_temp:     "température actuelle {value} degrés"
+climate_target_temp:      "consigne à {value} degrés"
+climate_mode:             "Le {name} est en mode {mode}."
+
+weather_local_reply:      "Selon votre station météo, il fait {temp} degrés, {cond}."
+weather_local_cond:       "Conditions météo : {cond}."
+
+connectivity_on:          "La {name} est connectée et opérationnelle."
+connectivity_off:         "La {name} est déconnectée ou hors ligne."
+
+presence_on:              "Il y a quelqu'un dans {name}."
+presence_off:             "Il n'y a personne dans {name}."
+
+opening_open:             "La {name} est ouverte."
+opening_closed:           "La {name} est fermée."
+
+motion_on:                "Mouvement détecté par {name}."
+motion_off:               "Aucun mouvement détecté par {name}."
+
+binary_generic_reply:     "{name} : {state}."
+fallback_reply:           "{name} est {state}."
+
+# ── get_ha_state — détection type d'entité ────────────────────────────────────
+lamp_keywords:
+  - "lampe"
+  - "lumiere"
+  - "lumière"
+  - "spot"
+  - "led"
+  - "sapin"
+  - "light"
+  - "lamp"
+
+mailbox_keywords:
+  - "courrier"
+  - "colis"
+  - "boite"
+  - "boîte"
+  - "lettre"
+  - "mail"
+  - "parcel"
+  - "mailbox"
+
+parcel_keywords:
+  - "colis"
+  - "parcel"
+
+# ── get_weather.py ────────────────────────────────────────────────────────────
+weather_city_not_found:   "Je ne trouve pas la ville {city}."
+weather_error:            "Impossible d'obtenir la météo. {error}"
+weather_generic_error:    "Erreur météo : {error}"
+weather_no_forecast:      "Je n'ai pas les prévisions pour ce jour."
+weather_geocode_language: "fr"
+
+weather_today_minmax:     "À {city} il fait {temp} degrés, entre {tmin} et {tmax} degrés aujourd'hui"
+weather_today_temp:       "À {city} il fait {temp} degrés"
+weather_feels_cold:       "mais ça ressent comme {apparent} degrés avec le vent"
+weather_feels_warm:       "mais ça ressent comme {apparent} degrés"
+weather_wind_strong:      "vent fort à {wind} km/h"
+weather_wind_moderate:    "vent modéré à {wind} km/h"
+weather_wind_light:       "vent de {wind} km/h"
+weather_precip_now:       "il tombe actuellement {precip} mm"
+weather_rain_high:        "risque de pluie élevé aujourd'hui ({prob}%)"
+weather_rain_moderate:    "risque de pluie de {prob}% pour la journée"
+weather_rain_low:         "pas de pluie prévue"
+weather_no_precip:        "pas de précipitations"
+
+weather_forecast_intro:   "Pour {day} à {city}"
+weather_forecast_temp:    "entre {tmin} et {tmax} degrés"
+weather_forecast_wind:    "vent jusqu'à {wind} km/h"
+weather_forecast_rain:    "{rain} mm de pluie attendus"
+weather_forecast_rain_prob: "risque de pluie de {prob}%"
+weather_forecast_rain_low:  "peu de précipitations"
+
+weather_day_tomorrow:     "demain"
+weather_day_after:        "après-demain"
+
+wmo_codes:
+  0:  "ciel dégagé"
+  1:  "principalement dégagé"
+  2:  "partiellement nuageux"
+  3:  "couvert"
+  45: "brouillard"
+  48: "brouillard givrant"
+  51: "bruine légère"
+  53: "bruine modérée"
+  55: "bruine dense"
+  61: "pluie légère"
+  63: "pluie modérée"
+  65: "pluie forte"
+  71: "neige légère"
+  73: "neige modérée"
+  75: "neige forte"
+  77: "grains de neige"
+  80: "averses légères"
+  81: "averses modérées"
+  82: "averses violentes"
+  85: "averses de neige légères"
+  86: "averses de neige fortes"
+  95: "orage"
+  96: "orage avec grêle légère"
+  99: "orage avec forte grêle"
+
+# ── ha_entities_loader.py — mots-clés de pièces ───────────────────────────────
+room_keywords:
+  "salon":         ["salon", "living", "séjour"]
+  "petit salon":   ["petit salon", "Petit salon", "Petit Salon"]
+  "entrée":        ["entrée", "entree", "hall", "couloir"]
+  "cuisine":       ["cuisine", "kitchen", "îlot", "ilot"]
+  "chambre":       ["chambre", "bedroom", "dortoir"]
+  "bureau":        ["bureau", "office"]
+  "salle de bain": ["salle de bain", "sdb", "bathroom"]
+  "garage":        ["garage"]
+  "terrasse":      ["terrasse", "extérieur", "jardin", "outdoor"]
+  "couloir":       ["couloir", "dégagement"]
+  "cave":          ["cave", "sous-sol"]
+  "grenier":       ["grenier", "combles"]
+  "escalier":      ["escalier", "stairs"]
+
+# ── web_search.py ─────────────────────────────────────────────────────────────
+ddg_locale:           "fr-fr"
+search_timeout:       "La recherche a pris trop de temps, veuillez réessayer."
+search_error:         "Impossible d'effectuer la recherche : {error}"
+search_not_found:     "Je n'ai pas trouvé d'information sur {query}."

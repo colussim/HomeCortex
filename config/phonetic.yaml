@@ -1,0 +1,59 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/phonetic.yaml — Phonetic corrections for Whisper
+#
+# Whisper sometimes transcribes phonetically similar words incorrectly.
+# This file maps incorrect transcriptions to the correct ones.
+#
+# Format: "incorrect_transcription": "correction"
+# Keys are in lowercase — comparison is case-insensitive.
+# ══════════════════════════════════════════════════════════════════════════════
+
+corrections:
+  # -------------------------  Network / Home Automation ------------------------- 
+  "loire":   "lora"        # "Gateway Loire" → "Gateway LoRa"
+  "laura":   "lora"        # "Gateway Laura" → "Gateway LoRa"
+  "loran":   "lora"        # phonetic variant
+  "zigby":   "zigbee"      # "zigby" → "zigbee"
+  "zigbi":   "zigbee"
+  "zwave":   "z-wave"
+
+  # -------------------------  Voice Commands ------------------------- 
+  "et un":   "éteins"      # "et un petit salon" → "éteins petit salon"
+  "et ain":  "éteins"      # variant
+  "étain":   "éteins"      # "étain" (metal) → "éteins"
+  "eteins":  "éteins"      # without accent
+  "salaud":  "salon"       # "lampe salaud" → "lampe salon"
+  "salot":   "salon"
+  "allume":  "allume"      # OK — conserver
+  "alume":   "allume"      # une seule l
+
+  # -------------------------  Proper nouns -------------------------
+  "gaulet":  "golay"       # "Marc Gaulet" → "Marc Golay"
+  "goalay":  "golay"
+  "Gaulet":  "golay"
+  "Goulet":  "golay"
+  "golait":  "golay"
+  "Godet":   "golay"
+  "Marc Gauley":  "Marc Golay"
+  "Marc Gaulet": "Marc Golay"
+  "collet":  "colussi"     # "Collet" → "Colussi"
+  "colluci": "colussi"
+  "colusi":  "colussi"
+
+  # -------------------------  Rooms -------------------------
+  # Add here the errors that Whisper makes on your room names
+  # "entré":  "entrée"      # example
+
+# -------------------------  Words to force in Whisper vocabulary -------------------------
+# These words are added to WHISPER_HINT to force their recognition
+force_vocabulary:
+  - "éteins"
+  - "éteindre"
+  - "allume"
+  - "Golay"
+  - "Colussi"
+  - "LoRa"
+  - "Zigbee"
+  - "salon"
+  - "escalier"
+  - "entrée"

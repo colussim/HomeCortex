@@ -1,0 +1,22 @@
+i# ══════════════════════════════════════════════════════════════════
+# .env — SECRETS 
+# The functional parameters are in config/kira.yaml 
+# ══════════════════════════════════════════════════════════════════
+
+# ── Kira ──────────────────────────────────────────────────────────
+
+KIRA_API_TOKEN="Your_Token"
+
+# ── Home Assistant ────────────────────────────────────────────────
+
+HA_TOKEN="Your_Token"
+HA_URL="http://X.X.X.X:8123/api"
+HA_URL_C="http://X.X.X.X:8123"
+
+# ── ElevenLabs ────────────────────────────────────────────────────
+
+ELEVENLABS_API_KEY="sk_Your_Token"
+
+# ── HuggingFace (pyannote speaker ID) ────────────────────────────
+
+HF_TOKEN="Your_Token"

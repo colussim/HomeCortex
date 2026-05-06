@@ -1,0 +1,435 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/lang/en.yaml — English keywords
+# Set LANGUAGE=en in .env to use this file
+# ══════════════════════════════════════════════════════════════════════════════
+
+language: en
+language_name: "English"
+
+whisper_hint_base: "turn on, turn off, open, close, dim, lights, thermostat, LoRa, gateway, Zigbee"
+
+ha_action_verbs:
+  - "turn on"
+  - "turn off"
+  - "switch on"
+  - "switch off"
+  - "open"
+  - "close"
+  - "dim"
+  - "brighten"
+  - "set"
+  - "activate"
+  - "deactivate"
+  - "raise"
+  - "lower"
+
+time_keywords:
+  - "what time"
+  - "what's the time"
+  - "current time"
+  - "what day"
+  - "what date"
+  - "today's date"
+
+time_hour_keywords:
+  - "time"
+  - "hour"
+
+time_date_keywords:
+  - "date"
+  - "day"
+
+weather_keywords:
+  - "weather"
+  - "forecast"
+  - "will it rain"
+  - "temperature outside"
+  - "is it hot"
+  - "is it cold"
+
+weather_tomorrow: "tomorrow"
+weather_day_after: "day after tomorrow"
+
+weather_cities:
+  - "geneva"
+  - "paris"
+  - "london"
+  - "zurich"
+  - "lausanne"
+  - "berlin"
+
+state_question_keywords:
+  - "is it on"
+  - "is it off"
+  - "is it open"
+  - "is it closed"
+  - "is it connected"
+  - "what's the state"
+  - "status of"
+  - "mail"
+  - "package"
+  - "parcel"
+
+sensor_question_keywords:
+  - "temperature"
+  - "humidity"
+  - "co2"
+  - "consumption"
+  - "outside"
+  - "inside"
+
+sensor_question_markers:
+  - "what"
+  - "how"
+  - "?"
+
+question_markers:
+  - "?"
+  - "is there"
+  - "do i have"
+  - "have i got"
+  - "any"
+
+state_regex_patterns:
+  - "is it on"
+  - "is it off"
+  - "is it open"
+  - "is it closed"
+  - "(?<![a-z])is (?:the )?\\w+ on"
+  - "(?<![a-z])is (?:the )?\\w+ off"
+
+synonyms:
+  "light": "lamp"
+  "lights": "lamps"
+  "bulb": "lamp"
+
+articles:
+  - "the "
+  - "a "
+  - "an "
+  - "some "
+
+responses:
+  time_format:    "It's {hour}:{minute}."
+  date_format:    "Today is {weekday}, {month} {day}, {year}."
+  datetime_format: "It's {hour}:{minute} on {weekday}, {month} {day}."
+
+  weekdays:
+    - "Monday"
+    - "Tuesday"
+    - "Wednesday"
+    - "Thursday"
+    - "Friday"
+    - "Saturday"
+    - "Sunday"
+
+  months:
+    - "January"
+    - "February"
+    - "March"
+    - "April"
+    - "May"
+    - "June"
+    - "July"
+    - "August"
+    - "September"
+    - "October"
+    - "November"
+    - "December"
+
+ha_states:
+  light_on:         "on"
+  light_off:        "off"
+  switch_on:        "on"
+  switch_off:       "off"
+  cover_open:       "open"
+  cover_closed:     "closed"
+  cover_partial:    "open at {position}%"
+  binary_on:        "active"
+  binary_off:       "inactive"
+  motion_on:        "detected"
+  motion_off:       "no motion"
+  door_open:        "open"
+  door_closed:      "closed"
+  connectivity_on:  "online"
+  connectivity_off: "offline"
+  mail_detected:    "Yes, you have mail."
+  mail_empty:       "No mail detected."
+  parcel_detected:  "Yes, a parcel has been delivered."
+  parcel_empty:     "No parcel detected."
+  light_reply:      "The {name} is {state}."
+  sensor_reply:     "The {type} in {location} is {value} {unit}."
+  cover_reply:      "The {name} is {state}."
+  binary_reply:     "{name} is {state}."
+  unknown:          "Could not get the state of {name}."
+  unavailable:      "{name} is unavailable."
+
+personalization:
+  short_reply: "{reply}, {name}."
+  long_reply: "{name}, {reply_lower}"
+  short_threshold: 40
+
+# ── detect_expect_reply ───────────────────────────────────────────────────────
+no_reply_patterns:
+  - "i didn't receive"
+  - "i didn't understand"
+  - "i don't know"
+  - "please specify"
+  - "which device"
+  - "which room"
+  - "multiple devices"
+
+question_regex_patterns:
+  - "\\bwhich\\b"
+  - "\\bwhat\\b"
+  - "\\bwhere\\b"
+  - "\\bwould you\\b"
+  - "\\bdo you want\\b"
+  - "\\bcan you confirm\\b"
+  - "\\bcan you specify\\b"
+  - "\\bplease clarify\\b"
+
+# ── router_llm ────────────────────────────────────────────────────────────────
+speaker_context: "\nThe user's name is {name} (confidence: {conf}). Use their name naturally in your response.\n"
+
+person_question_patterns:
+  - "who is"
+  - "what is"
+  - "tell me about"
+  - "do you know"
+  - "can you tell me"
+
+# ── System messages ───────────────────────────────────────────────────────────
+tool_unknown:       "I tried to use a tool I don't master yet."
+tool_no_result:     "I could not retrieve the information."
+idle_response:      "I'm listening."
+tool_reformulation: "You are Kira. Respond ONLY in {language_name}. Reformulate the result in one short natural sentence. No lists, no markdown, no symbols."
+
+# ── Room group bypass ─────────────────────────────────────────────────────────
+group_lights_on:  "The lights in {room} are on."
+group_lights_off: "The lights in {room} are off."
+time_hour_singular: "o'clock"
+time_hour_plural:   ""
+time_quarter_past:  "quarter past {h}."
+time_half:          "half past {h}."
+time_quarter_to:    "quarter to {h}."
+time_exact:         "It is {h}:{m}."
+time_oclock:        "It is {h}."
+
+# ── memory.py ─────────────────────────────────────────────────────────────────
+
+intent_patterns:
+  weather:   ["weather", "temperature", "rain", "wind", "sun", "forecast"]
+  light:     ["lamp", "light", "turn on", "turn off", "lighting"]
+  shutter:   ["shutter", "blind", "open", "close"]
+  heating:   ["heating", "thermostat", "temperature", "hot", "cold"]
+  question:  ["who", "what", "how", "why", "when", "where"]
+  identity:  ["kira", "you are", "your name", "who are you", "created"]
+
+intent_stop_words:
+  - "what"
+  - "which"
+  - "with"
+  - "into"
+  - "from"
+  - "very"
+  - "well"
+  - "make"
+
+fact_triggers:
+  - "remember"
+  - "don't forget"
+  - "my name is"
+  - "i prefer"
+  - "i like"
+  - "i don't like"
+  - "i live"
+  - "note that"
+  - "keep in mind"
+  - "memorize"
+
+memory_habits_header: "LEARNED HABITS (based on actual history) :"
+memory_facts_header:  "WHAT YOU KNOW ABOUT THE HOME AND ITS RESIDENTS :"
+memory_habit_weather: "- Favorite weather city: {city} ({count} requests) -> use by default if no city mentioned"
+memory_habit_action:  "- Frequent action: {canonical} ({count} times)"
+memory_habit_question: "- Recurring question: {canonical} ({count} times) -> answer directly without hesitation"
+
+intent_weather_key: "weather"
+intent_light_key:   "light"
+intent_question_key: "question"
+
+# ── get_ha_state.py ───────────────────────────────────────────────────────────
+ha_unavailable:           "Cannot connect to Home Assistant right now."
+ha_entity_not_found:      "I cannot find entity {entity_id} in Home Assistant."
+
+unit_labels:
+  "°C":   "degrees"
+  "°F":   "degrees Fahrenheit"
+  "%":    "percent"
+  "hPa":  "hectopascals"
+  "W":    "watts"
+  "kWh":  "kilowatt-hours"
+  "lx":   "lux"
+  "ppm":  "ppm"
+  "m/s":  "meters per second"
+  "km/h": "kilometers per hour"
+  "mm":   "millimeters"
+
+binary_state_labels:
+  "on":           "on"
+  "off":          "off"
+  "open":         "open"
+  "closed":       "closed"
+  "locked":       "locked"
+  "unlocked":     "unlocked"
+  "home":         "home"
+  "not_home":     "away"
+  "true":         "active"
+  "false":        "inactive"
+  "online":       "online"
+  "offline":      "offline"
+  "connected":    "connected"
+  "disconnected": "disconnected"
+  "unavailable":  "unavailable"
+
+sensor_celsius_reply:     "The {name} is {value} degrees."
+sensor_percent_reply:     "The {name} level is {value} percent."
+sensor_generic_reply:     "{name}: {value} {unit}."
+sensor_unavailable_reply: "The value of {name} is not available."
+sensor_text_reply:        "{name}: {state}."
+
+light_on_reply:           "The {name} is on."
+light_off_reply:          "The {name} is off."
+light_brightness_reply:   "The {name} is on at {pct} percent."
+
+switch_lamp_on:           "The {name} is on."
+switch_lamp_off:          "The {name} is off."
+switch_on:                "The {name} is active."
+switch_off:               "The {name} is off."
+
+cover_open_pct:           "The {name} is open at {pos} percent."
+cover_open:               "The {name} is open."
+cover_closed:             "The {name} is closed."
+cover_opening:            "The {name} is opening."
+cover_closing:            "The {name} is closing."
+cover_state:              "The {name} is {state}."
+
+climate_reply:            "The {name}: {parts}."
+climate_current_temp:     "current temperature {value} degrees"
+climate_target_temp:      "target {value} degrees"
+climate_mode:             "The {name} is in {mode} mode."
+
+weather_local_reply:      "According to your weather station, it is {temp} degrees, {cond}."
+weather_local_cond:       "Weather conditions: {cond}."
+
+connectivity_on:          "The {name} is connected and operational."
+connectivity_off:         "The {name} is disconnected or offline."
+
+presence_on:              "Someone is in {name}."
+presence_off:             "Nobody is in {name}."
+
+opening_open:             "The {name} is open."
+opening_closed:           "The {name} is closed."
+
+motion_on:                "Motion detected by {name}."
+motion_off:               "No motion detected by {name}."
+
+binary_generic_reply:     "{name}: {state}."
+fallback_reply:           "{name} is {state}."
+
+# ── get_ha_state — entity type detection ─────────────────────────────────────
+lamp_keywords:
+  - "lamp"
+  - "light"
+  - "spot"
+  - "led"
+  - "bulb"
+
+mailbox_keywords:
+  - "mail"
+  - "mailbox"
+  - "parcel"
+  - "package"
+  - "delivery"
+  - "letter"
+
+parcel_keywords:
+  - "parcel"
+  - "package"
+  - "delivery"
+
+# ── get_weather.py ────────────────────────────────────────────────────────────
+weather_city_not_found:   "I cannot find the city {city}."
+weather_error:            "Unable to get the weather. {error}"
+weather_generic_error:    "Weather error: {error}"
+weather_no_forecast:      "I don't have the forecast for that day."
+weather_geocode_language: "en"
+
+weather_today_minmax:     "In {city} it is {temp} degrees, between {tmin} and {tmax} degrees today"
+weather_today_temp:       "In {city} it is {temp} degrees"
+weather_feels_cold:       "but it feels like {apparent} degrees with the wind"
+weather_feels_warm:       "but it feels like {apparent} degrees"
+weather_wind_strong:      "strong wind at {wind} km/h"
+weather_wind_moderate:    "moderate wind at {wind} km/h"
+weather_wind_light:       "wind at {wind} km/h"
+weather_precip_now:       "currently {precip} mm of precipitation"
+weather_rain_high:        "high rain risk today ({prob}%)"
+weather_rain_moderate:    "{prob}% chance of rain today"
+weather_rain_low:         "no rain expected"
+weather_no_precip:        "no precipitation"
+
+weather_forecast_intro:   "For {day} in {city}"
+weather_forecast_temp:    "between {tmin} and {tmax} degrees"
+weather_forecast_wind:    "wind up to {wind} km/h"
+weather_forecast_rain:    "{rain} mm of rain expected"
+weather_forecast_rain_prob: "{prob}% chance of rain"
+weather_forecast_rain_low:  "little precipitation"
+
+weather_day_tomorrow:     "tomorrow"
+weather_day_after:        "the day after tomorrow"
+
+wmo_codes:
+  0:  "clear sky"
+  1:  "mainly clear"
+  2:  "partly cloudy"
+  3:  "overcast"
+  45: "fog"
+  48: "freezing fog"
+  51: "light drizzle"
+  53: "moderate drizzle"
+  55: "dense drizzle"
+  61: "slight rain"
+  63: "moderate rain"
+  65: "heavy rain"
+  71: "slight snow"
+  73: "moderate snow"
+  75: "heavy snow"
+  77: "snow grains"
+  80: "slight showers"
+  81: "moderate showers"
+  82: "violent showers"
+  85: "slight snow showers"
+  86: "heavy snow showers"
+  95: "thunderstorm"
+  96: "thunderstorm with slight hail"
+  99: "thunderstorm with heavy hail"
+
+# ── ha_entities_loader.py — room keywords ────────────────────────────────────
+room_keywords:
+  "living room":  ["living room", "living", "salon", "lounge"]
+  "kitchen":      ["kitchen", "cuisine"]
+  "bedroom":      ["bedroom", "chambre", "room"]
+  "office":       ["office", "bureau", "study"]
+  "bathroom":     ["bathroom", "salle de bain", "sdb"]
+  "garage":       ["garage"]
+  "terrace":      ["terrace", "terrasse", "garden", "outdoor", "exterior"]
+  "hallway":      ["hallway", "hall", "entrée", "entree", "corridor", "couloir"]
+  "basement":     ["basement", "cave", "sous-sol"]
+  "attic":        ["attic", "grenier", "combles"]
+  "stairs":       ["stairs", "escalier"]
+
+# ── web_search.py ─────────────────────────────────────────────────────────────
+ddg_locale:           "en-us"
+search_timeout:       "The search took too long, please try again."
+search_error:         "Unable to perform the search: {error}"
+search_not_found:     "I could not find any information about {query}."

@@ -1,0 +1,65 @@
+{
+  "active_tools": [
+    "get_weather",
+    "web_search",
+    "get_ha_state"
+  ],
+  "definitions": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get current weather or forecasts for a city. Call this tool for any question about the weather, temperature, rain, wind or forecasts. Typical questions: 'what's the weather like?', 'what's the weather in Geneva?', 'is it going to rain?', 'tomorrow's forecast'. If no city is mentioned, use Geneva by default.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name. Default: Geneva."
+            },
+            "days": {
+              "type": "integer",
+              "description": "1=today, 2=tomorrow, 3=day after tomorrow. Default: 1.",
+              "default": 1
+            }
+          },
+          "required": ["city"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "web_search",
+        "description": "Search for information on the Internet via DuckDuckGo. Use when the question is about a person, place, event or uncertain fact. Typical questions: 'who is [person]?', 'what is [concept]?', 'where is [place]?'. Do not use for weather or home automation commands.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Subject to search. E.g.: 'Steve Jobs', 'capital of Japan'."
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_ha_state",
+        "description": "Read the current state of a device or sensor in Home Assistant. Use for any question about the home state: temperature, humidity, lights on/off, shutters open/closed, power consumption, presence, sensors. Typical questions: 'what is the outside temperature?', 'is the living room light on?', 'what is the humidity level?'. Do not use for commands (turn on, turn off, open) or Internet weather.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "description": "Home Assistant entity ID. Examples: 'sensor.temperature_exterieure', 'light.lampe_salon', 'climate.thermostat'. If unknown, use an approximate name — fuzzy match enabled."
+            }
+          },
+          "required": ["entity_id"]
+        }
+      }
+    }
+  ]
+}

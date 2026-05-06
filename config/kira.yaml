@@ -1,0 +1,147 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/kira.yaml — Kira main configuration
+#
+# This file contains non-secret functional parameters.
+# Secrets (tokens, API keys) remain in .env
+#
+# Loading priority:
+#   kira.yaml < .env  (variables in .env override kira.yaml if conflict)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Language ───────────────────────────────────────────────────────────────────
+# Language file loaded: config/lang/<language>.yaml
+# Available values: fr, en
+language: fr
+
+# ── STT — Speech-to-Text ──────────────────────────────────────────────────────
+stt:
+  backend: mlx_whisper          # mlx_whisper | faster_whisper | whisper_cpp
+  model: mlx-community/whisper-large-v3-turbo
+  temperature: 0.0              # 0.0 = deterministic
+  best_of: 1
+  suppress_tokens: "-1"
+  condition_on_previous_text: false
+  device: cpu # cpu | cuda | auto (auto = GPU/NPU if available, otherwise CPU)
+  compute_type: int8  # int8 | float16 | float32
+ 
+
+# ── LLM ───────────────────────────────────────────────────────────────────────
+llm:
+  backend: ollama               # ollama | llama_cpp | openai
+  model: qwen2.5:3b
+  temperature: 0.7
+  top_p: 0.9
+  repeat_penalty: 1.1
+  num_predict: 50               # max tokens generated — keep low for speed
+  context_size: 4096
+  enabled: true                 # false = bypass mode only, without LLM
+  ollama_keep_alive: -1         # -1 = keep the model loaded permanently
+
+# ── TTS — Text-to-Speech ──────────────────────────────────────────────────────
+tts:
+  elevenlabs_enabled: true      # true = ElevenLabs, false = Piper local
+  elevenlabs_voice_id: 6vTyAgAT8PncODBcLjRf
+  elevenlabs_model_id: eleven_turbo_v2_5
+  cache_enabled: true
+  cache_db: config/tts_cache.db
+  # Piper (used if elevenlabs_enabled: false)
+  piper_model: fr_FR-siwis-medium
+  piper_models_dir: /usr/local/whisper-server/models/piper
+  piper_speaker: 0
+  piper_speed: 1.0
+  xtts_speaker_wav: models/xtts/speaker_kira.wav
+  xtts_language: fr
+
+# ── Mémoire conversationnelle ─────────────────────────────────────────────────
+memory:
+  db: config/kira_memory.db
+  max_history: 20               # number of exchanges retained per satellite
+  # Adaptation threshold: if a question returns > n times → optimized response
+  adaptive_threshold: 5
+
+# ── Speaker identification ────────────────────────────────────────────────────
+speaker:
+  enabled: false                # true to enable (requires pyannote.audio)
+  threshold: 0.45               # minimum cosine score to identify (0.0-1.0)
+  # Lower = more permissive, higher = stricter
+  # Recommended value from WiFi satellite: 0.40-0.55
+  # Recommended value direct microphone        : 0.65-0.75
+  model: pyannote/wespeaker-voxceleb-resnet34-LM
+  memory_db: config/kira_memory.db
+
+
+# ── Météo ─────────────────────────────────────────────────────────────────────
+weather:
+  default_city: Genève
+  cache_minutes: 15             # duration of weather cache in RAM
+  default_days: 1               # number of days by default
+
+# ── Proactif ──────────────────────────────────────────────────────────────────
+proactive:
+  enabled: false                # true to enable scheduled announcements
+  timezone: Europe/Zurich
+
+# ── Serveur ───────────────────────────────────────────────────────────────────
+server:
+  host: 0.0.0.0
+  port: 8000
+  log_level: info
+  # Save received audio for debug / re-enrollment speaker
+  save_audio: false
+  save_audio_dir: /tmp/kira_audio
+
+# ── Bypass ────────────────────────────────────────────────────────────────────
+bypass:
+  # Max delay for HA calls (seconds)
+  ha_timeout: 5
+  # Max delay for weather
+  weather_timeout: 8
+  # Enable room group bypass
+  room_groups_enabled: true
+
+# ── Whisper hint ──────────────────────────────────────────────────────────────
+whisper:
+  # Maximum number of aliases in the hint (too many = less efficient)
+  max_alias_in_hint: 20
+  max_entities_in_hint: 10
+  # Phonetic correction enabled
+  phonetic_correction: true
+
+# ── HA Entities ───────────────────────────────────────────────────────────────
+ha:
+  # HA registry file to load voice aliases
+  registry_file: HA/core.entity_registry
+  # JSON cache of entities (automatically generated)
+  entities_cache: config/ha_entities.json
+  # Domains to include in the loading
+  domains:
+    - light
+    - switch
+    - cover
+    - sensor
+    - binary_sensor
+    - input_boolean
+  # Prefixes of entities to exclude from groups (network switch, POE...)
+  excluded_prefixes:
+    - switch.switch
+    - switch.poe
+    - switch.port
+    - switch.router
+    - switch.hub
+    - switch.nas
+  # Keywords to exclude from groups
+  excluded_keywords:
+    - camera
+    - sensor
+    - motion
+    - door
+    - window
+    - alarm
+    - siren
+    - buzzer
+    - temperature
+    - lora
+    - humidity
+    - co2
+    - presence
+    - smoke

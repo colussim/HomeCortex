@@ -1,0 +1,25 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/personas.yaml — Protected personalities and names
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Family names — excluded from WHISPER_HINT and HA bypass
+# to prevent Kira from treating a question about a person as a command
+family:
+  names:
+    - "colussi"
+    - "véronique"
+    - "véronica"
+    - "emmanuel"
+    - "golay"
+    - "marc"
+ 
+# Variantes du wake word / nom de l'assistant
+# Whisper peut transcrire "Kira" de différentes façons
+assistant_name_variants:
+  - "kira"
+  - "kyra"
+  - "tyra"
+  - "tira"
+  - "lyra"
+  - "ira"
+  - "cira"

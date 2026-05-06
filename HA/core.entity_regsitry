@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "minor_version": 22,
+  "key": "core.entity_registry",
+  "data": {
+    "entities": [  ]
+  }
+}

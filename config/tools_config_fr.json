@@ -1,0 +1,65 @@
+{
+  "active_tools": [
+    "get_weather",
+    "web_search",
+    "get_ha_state"
+  ],
+  "definitions": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Obtenir la météo actuelle ou les prévisions pour une ville. Appeler cet outil pour toute question sur le temps qu'il fait, la température, la pluie, le vent ou les prévisions. Questions typiques : 'quel temps fait-il ?', 'quelle est la météo à Genève ?', 'est-ce qu'il va pleuvoir ?', 'météo de demain'. Si aucune ville n'est mentionnée, utiliser Genève par défaut.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "Nom de la ville. Défaut : Genève."
+            },
+            "days": {
+              "type": "integer",
+              "description": "1=aujourd'hui, 2=demain, 3=après-demain. Défaut : 1.",
+              "default": 1
+            }
+          },
+          "required": ["city"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "web_search",
+        "description": "Rechercher une information sur Internet via DuckDuckGo. Utiliser quand la question porte sur une personne, un lieu, un événement ou un fait incertain. Questions typiques : 'qui est [personne] ?', 'qu'est-ce que [concept] ?', 'où se trouve [lieu] ?'. Ne pas utiliser pour la météo ni pour les commandes domotiques.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Sujet à rechercher. Ex : 'Steve Jobs', 'capitale du Japon'."
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_ha_state",
+        "description": "Lire l'état actuel d'un appareil ou capteur dans Home Assistant. Utiliser pour toute question sur l'état de la maison : température, humidité, lumières allumées/éteintes, volets ouverts/fermés, consommation, présence, capteurs. Questions typiques : 'quelle est la température extérieure ?', 'est-ce que la lumière du salon est allumée ?', 'quel est le niveau d'humidité ?'. Ne pas utiliser pour donner des commandes (allumer, éteindre, ouvrir) ni pour la météo Internet.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "description": "Identifiant HA. Exemples : 'sensor.temperature_exterieure', 'light.lampe_salon', 'climate.thermostat'. Si inconnu, utiliser un nom approché — fuzzy match activé."
+            }
+          },
+          "required": ["entity_id"]
+        }
+      }
+    }
+  ]
+}

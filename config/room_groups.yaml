@@ -1,0 +1,62 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# config/room_groups.yaml — Light groups per room
+#
+# Used by the voice bypass "allume chambre 1" → turns on all lights
+# in the room with a single command.
+#
+# IMPORTANT: Prefer native HA groups (light.group_xxx) when possible.
+# A HA group = a single command → more reliable and faster.
+#
+# Format :
+#   alias: entity_id HA   (group or individual entity)
+#   alias: [entity_id_1, entity_id_2]  (list if no HA group)
+# ══════════════════════════════════════════════════════════════════════════════
+
+groups:
+  # ------------------------  Bedrooms ------------------------
+  "chambre 1":     "light.chambre_1"      # HA group → Right + Left Bedroom1
+  "chambre un":    "light.chambre_1"
+  "chambre1":      "light.chambre_1"
+
+  "chambre 3":     "light.chambre_3"      # HA group → Right + Left Bedroom3
+  "chambre trois": "light.chambre_3"
+  "chambre3":      "light.chambre_3"
+
+  # ------------------------  Living Room ------------------------
+  "petit salon":   # HA group → Lamp PS + Lamp Tree PS
+    - "light.petit_salon"    
+    - "light.lampe_arbre_petit_salon"
+  "salon":         "switch.lampe_salon"
+
+  # ------------------------  Other Rooms ------------------------
+  "escalier":
+    - "switch.lampe_escalier"
+    - "switch.lampe_table_escalier"
+
+  "bureau":        "light.lampe_bureau"
+  "entrée":        "light.lampe_entree"
+  "terrasse":      "switch.lampe_terrasse"
+  "extérieur":     "light.lampe_entree_ext"
+
+# Keywords indicating a specific lamp (not a group)
+# → do not trigger the group bypass if present
+specific_lamp_keywords:
+  - "droite"
+  - "gauche"
+  - "table"
+  - "panneau"
+  - "arbre"
+  - "ilot"
+  - "sapin"
+
+# Verbs that trigger the group bypass
+group_action_verbs:
+  - "allume"
+  - "éteins"
+  - "eteins"
+  - "éteint"
+  - "eteint"
+  - "eteind"
+  - "coupe"
+  - "active"
+  - "désactive"
