@@ -1,0 +1,31 @@
+{
+  "lang":             "fr",
+  "app_title":        "Kira — Chat",
+  "header_title":     "Kira",
+  "header_subtitle":  "assistante vocale",
+  "status_checking":  "vérification...",
+  "status_online":    "en ligne",
+  "status_offline":   "hors ligne",
+
+  "welcome_title":    "Bonjour, je suis Kira",
+  "welcome_subtitle": "Votre assistante domotique locale. Posez-moi vos questions ou donnez-moi des commandes.",
+
+  "suggestions": [
+    "Quelle heure est-il ?",
+    "Quelle est la météo ?",
+    "Allume lampe salon",
+    "Lampe salon est-elle allumée ?",
+    "Qui es-tu ?"
+  ],
+
+  "input_placeholder": "Écrivez une commande ou une question…",
+  "input_hint":        "Entrée pour envoyer · Maj+Entrée pour nouvelle ligne",
+  "send_button":       "↑",
+
+  "badge_ha_ok":       "HA · OK",
+  "badge_ha_err":      "HA · ERR",
+  "badge_speech":      "SPEECH",
+
+  "error_backend":     "Impossible de contacter le backend Kira.",
+  "error_invalid":     "Requête invalide."
+}

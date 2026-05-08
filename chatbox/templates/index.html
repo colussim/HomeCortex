@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{.L.Lang}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{.L.AppTitle}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"> <img src="/static/imgs/{{.Logo}}" alt="Kira" style="width:40px;height:40px;object-fit:contain;"></div>
+   
+     <div class="logo-text">{{.L.HeaderTitle}} <span>{{.L.HeaderSubtitle}}</span></div>
+  </div>
+  <div class="header-right">
+    <select class="room-selector" id="roomSelect">
+      {{range .Rooms}}
+      <option value="{{.}}"{{if eq . $.DefaultRoom}} selected{{end}}>{{.}}</option>
+      {{end}}
+    </select>
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text" id="statusText">checking...</span>
+  </div>
+</header>
+
+<div class="messages" id="messages">
+  <div class="welcome" id="welcome">
+     <div class="welcome-icon">
+      <img src="/static/imgs/{{.Logo}}" alt="Kira" style="width:40px;height:40px;object-fit:contain;">
+    </div>
+   <h2>{{.L.WelcomeTitle}}</h2>
+    <p>{{.L.WelcomeSubtitle}}</p>
+    <div class="suggestions">
+     {{range .L.Suggestions}}
+      <div class="suggestion" onclick="sendSuggestion(this)">{{.}}</div>
+      {{end}}
+    </div>
+  </div>
+</div>
+
+
+<div class="input-area">
+  <div class="input-wrap">
+    <textarea id="input" placeholder="{{.L.InputPlaceholder}}" rows="1"></textarea>
+    <button class="send-btn" id="sendBtn" title="{{.L.InputHint}}">{{.L.SendButton}}</button>
+  </div>
+  <div class="input-hint">{{.L.InputHint}}</div>
+</div>
+
+{{/* Passer les traductions au JS via data attributes */}}
+<script>
+window.KIRA_I18N = {
+  statusOnline:   "{{.L.StatusOnline}}",
+  statusOffline:  "{{.L.StatusOffline}}",
+  badgeHaOk:      "{{.L.BadgeHaOk}}",
+  badgeHaErr:     "{{.L.BadgeHaErr}}",
+  badgeSpeech:    "{{.L.BadgeSpeech}}",
+  errorBackend:   "{{.L.ErrorBackend}}",
+};
+</script>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "lang":             "en",
+  "app_title":        "Kira — Chat",
+  "header_title":     "Kira",
+  "header_subtitle":  "voice assistant",
+  "status_checking":  "checking...",
+  "status_online":    "online",
+  "status_offline":   "offline",
+
+  "welcome_title":    "Hello, I'm Kira",
+  "welcome_subtitle": "Your local smart home assistant. Ask me questions or give me commands.",
+
+  "suggestions": [
+    "What time is it?",
+    "What's the weather like?",
+    "Turn on living room light",
+    "Is the living room light on?",
+    "Who are you?"
+  ],
+
+  "input_placeholder": "Type a command or question…",
+  "input_hint":        "Enter to send · Shift+Enter for new line",
+  "send_button":       "↑",
+
+  "badge_ha_ok":       "HA · OK",
+  "badge_ha_err":      "HA · ERR",
+  "badge_speech":      "SPEECH",
+
+  "error_backend":     "Cannot reach Kira backend.",
+  "error_invalid":     "Invalid request."
+}
