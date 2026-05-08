@@ -597,7 +597,132 @@ sudo apt install espeak-ng
 
 ---
 
-## 🔌 API Endpoints## 
+## 🚀 Running the server
+
+### Option A — pm2 (recommended for macOS and Linux)
+
+[pm2](https://pm2.keymetrics.io/) is a Node.js process manager that keeps the server running, restarts it on crash, and provides live log streaming. It is the recommended way to run Kira on both macOS and Linux.
+
+**Install pm2:**
+
+```bash
+npm install -g pm2
+```
+
+**Start the server:**
+
+```bash
+cd /usr/local/whisper-server
+source venv/bin/activate
+
+pm2 start "venv/bin/uvicorn server:app --host 0.0.0.0 --port 8000" \
+    --name whisper-server \
+    --cwd /usr/local/whisper-server
+
+pm2 save
+```
+
+**Auto-start on boot:**
+
+```bash
+# Generate and install the startup script
+pm2 startup
+
+# Run the command that pm2 prints, then save the process list
+pm2 save
+```
+
+**Daily commands:**
+
+```bash
+pm2 status                        # show all running processes
+pm2 logs whisper-server           # live log stream
+pm2 logs whisper-server --lines 50 # last 50 lines
+pm2 restart whisper-server        # restart after a config change
+pm2 stop whisper-server           # stop without removing
+pm2 delete whisper-server         # remove from pm2 process list
+pm2 monit                         # interactive CPU/memory monitor
+```
+
+**What pm2 brings over a plain `nohup` or `screen`:**
+
+- Automatic restart on crash or unhandled exception
+- Log rotation with timestamps (`~/.pm2/logs/`)
+- CPU and memory monitoring via `pm2 monit`
+- Single command restart after `config/kira.yaml` changes
+- Process persists across SSH session disconnects
+- `pm2 startup` generates a system service automatically
+
+---
+
+### Option B — systemd (Linux only)
+
+On a Raspberry Pi or any Linux server, you can run Kira as a native systemd service instead of pm2.
+
+Create the service file:
+
+```bash
+sudo nano /etc/systemd/system/kira.service
+```
+
+```ini
+[Unit]
+Description=Kira Voice Assistant Server
+After=network.target ollama.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/usr/local/whisper-server
+ExecStart=/usr/local/whisper-server/venv/bin/uvicorn server:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+EnvironmentFile=/usr/local/whisper-server/.env
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable kira
+sudo systemctl start kira
+```
+
+Daily commands:
+
+```bash
+sudo systemctl status kira        # show status
+sudo journalctl -u kira -f        # live log stream
+sudo journalctl -u kira -n 50     # last 50 lines
+sudo systemctl restart kira       # restart after a config change
+sudo systemctl stop kira          # stop the service
+```
+
+---
+
+### pm2 vs systemd — quick comparison
+
+| Feature | pm2 | systemd |
+|---|---|---|
+| Platform | macOS + Linux | Linux only |
+| Auto-restart on crash | ✅ | ✅ |
+| Boot auto-start | ✅ `pm2 startup` | ✅ `systemctl enable` |
+| Live logs | ✅ `pm2 logs` | ✅ `journalctl -f` |
+| CPU/memory monitor | ✅ `pm2 monit` | ❌ |
+| Multiple processes | ✅ | ✅ |
+| Setup complexity | Low | Medium |
+| Requires Node.js | Yes | No |
+
+> **Recommendation**: use pm2 on macOS (no systemd available) and on Linux developer machines for its interactive monitoring. Use systemd on production Linux servers for tighter OS integration and no Node.js dependency.
+
+---
+
+## 📍 API Endpoints
 
 All endpoints require the `X-Token` header with a valid satellite or chat token configured in `config/satellites.json`.
 
@@ -688,8 +813,12 @@ curl -X POST http://localhost:8000/alert \
 
 ---
 
+🚀 Conclusion
 
-## 🙏 Acknowledgments
+
+---
+
+## 📚 References
 
 - [OpenAI Whisper](https://github.com/openai/whisper) — speech recognition
 - [ml-explore/mlx-examples](https://github.com/ml-explore/mlx-examples) — Whisper MLX
