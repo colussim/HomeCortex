@@ -16,169 +16,260 @@
 
 ## ✨ What is HomeCortex?
 
-HomeCortex is an open-source, self-hosted AI backend for smart homes. 
-It connects ESP32-S3 voice satellites to your Home Assistant instance, processes natural language locally using LLMs, and generates natural voice responses all without sending a single byte to the cloud.
+HomeCortex is an open-source, self-hosted AI backend for smart homes. It connects ESP32-S3 voice satellites to Home Assistant, processes natural language locally using LLMs, and generates natural voice responses — all without sending a single byte to the cloud.
 
 Kira is the default voice assistant powered by HomeCortex.
 
-```
-You say: "Allume, Lampe Salon"      → Lamp turns on instantly
-You say: "Quelle est la météo ?"    → Real weather data, spoken aloud
-You say: "Éteins chambre 1"         → All bedroom lights turn off
-You say: "Quelle heure est-il ?"    → Instant answer, no LLM needed
-```
+Built around Whisper (STT), Ollama (LLM), and Piper or ElevenLabs (TTS), HomeCortex runs on Apple Silicon (Mac M1/M2) and ARM-based edge systems, communicating with distributed ESP32-S3 voice satellites over WiFi.
+
+The platform is designed with a privacy-first and edge-native architecture, enabling low-latency voice interactions, local AI inference, and fully self-hosted automation workflows.
+
+Although primarily designed for French language interactions, the platform also supports English and can be extended to additional languages.
+
+HomeCortex explores the convergence of edge computing, embedded systems, local LLM inference, and real-time voice-driven AI applications for next-generation smart environments.
+
+
+---
+
+## 🎯 Design Goals
+
+- Privacy-first local AI
+
+- Low-latency voice interaction
+
+- Modular backend architecture
+
+- Edge-compatible satellite devices
+
+- Apple Silicon optimized inference
+
+- Seamless Home Assistant integration
 
 ---
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         YOUR HOME NETWORK                           │
-│                                                                     │
-│  ┌──────────────┐    WAV audio     ┌──────────────────────────────┐ │
-│  │ ESP32-S3     │ ───────────────► │  Kira Backend (FastAPI)      │ │
-│  │ Satellite    │                  │                              │ │
-│  │              │ ◄─────────────── │  1. Whisper MLX  (STT)       │ │
-│  │ • WakeNet    │    JSON + WAV    │  2. Ollama LLM   (routing)   │ │
-│  │ • VAD / AEC  │                  │  3. Home Assistant (actions) │ │
-│  │ • I2S audio  │                  │  4. ElevenLabs / Piper (TTS) │ │
-│  └──────────────┘                  └──────────────────────────────┘ │
-│                                              │                      │
-│                                    ┌─────────▼──────────┐          │
-│                                    │  Home Assistant    │          │
-│                                    │  /api/services     │          │
-│                                    │  /api/states       │          │
-│                                    └────────────────────┘          │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+
+    subgraph SAT["ESP32-S3 Satellite"]
+        A[Wake Word<br/>WakeNet + VAD]
+        B[I2S Mic / Speaker]
+    end
+
+    subgraph SERVER["Mac M1 / ARM Server"]
+        C[FastAPI Server]
+
+        subgraph AI["AI Pipeline"]
+            D[STT<br/>Whisper MLX]
+            E[LLM<br/>Ollama]
+            F[TTS<br/>Piper / EdgeTTS]
+        end
+
+        subgraph SERVICES["Services"]
+            G[Home Assistant State]
+            H[Weather Service]
+            I[Entity Loader]
+        end
+    end
+
+    J[Home Assistant]
+
+    A -->|WAV Audio| C
+    C --> D
+    D --> E
+    E --> F
+    F -->|TTS WAV| A
+
+    E --> G
+    E --> H
+    E --> I
+
+    G --> J
+    I --> J
 ```
 
 ---
 
-## 🚀 Why Mac M-series First?
+## ✨ Features
 
-Kira is designed with a **two-phase hardware strategy**:
+- 🎤 **Low-latency local speech recognition** using Whisper MLX optimized for Apple Silicon
+- 🧠 **Fully local LLM inference** powered by Ollama (`qwen2.5:3b` recommended)
+- 🔊 **Natural speech synthesis** with Piper (local) or ElevenLabs (cloud)
+- 🏠 **Home Assistant integration** for contextual device control and state retrieval
+- 🎙️ **Speaker identification** using pyannote.audio for personalized interactions
+- 💬 **Web chat interface** built with Go (`kira-web`)
+- 📅 **Proactive assistant capabilities** including scheduled reminders and weather briefings
+- 🌍 **Multi-language support** with runtime FR/EN configuration
 
-### Phase 1 — Development on Apple Silicon (now)
+---
 
-The Apple Mac Studio / Mac Mini M-series is an ideal development platform:
+## 🧠 Hardware Strategy
 
-| Capability | Why it matters |
+HomeCortex follows a two-phase deployment strategy designed to balance rapid development, low-latency inference,and future edge-AI portability.
+
+### Phase 1 — Apple Silicon Development Platform (current)
+
+Apple Silicon systems (Mac Mini / Mac Studio M-series) provide an excellent platform for real-time local AI workloads:
+
+| Capability | Engineering Benefit |
 |---|---|
-| **Neural Engine (16+ TOPS)** | Runs Whisper MLX at native speed — STT in ~0.5s |
-| **Unified memory (32 GB)** | LLM + Whisper + server in RAM simultaneously |
-| **Metal GPU** | Ollama accelerated inference out of the box |
-| **Low power (~15W idle)** | Always-on home server without electricity concerns |
-| **macOS stability** | Production-ready for 24/7 operation |
+| **Neural Engine (16+ TOPS)** | Accelerated Whisper MLX inference (~0.5s STT) |
+| **Unified Memory Architecture** | Simultaneous STT + LLM + backend execution |
+| **Metal GPU Acceleration** | Native Ollama acceleration |
+| **Low Power Consumption** | Suitable for 24/7 always-on deployment |
+| **macOS Stability** | Reliable long-running home server environment |
 
-### Phase 2 — Migration to Arduino VENTUNO Q (coming soon)
 
+### Phase 2 — Edge AI Migration (Arduino VENTUNO Q)
+
+The backend architecture is designed to remain hardware-agnostic,
+allowing migration from Apple Silicon to embedded AI platforms
+without major software refactoring.
+
+```text
+ Apple Silicon                          Edge AI Platform
+───────────────────            ─────────────────────────────
+
+ STT  : Whisper MLX     ───►   faster-whisper
+ LLM  : Ollama          ───►   llama.cpp (GGUF)
+ TTS  : Piper / EL      ───►   Coqui XTTS v2
+
+ Runtime abstraction layer
+ Environment-based backend selection
+
+ Target:
+ Qualcomm Dragonwing IQ8 (40 TOPS NPU)
+ Arduino VENTUNO Q
 ```
-┌─────────────────────────────────────────────────────────┐
-│            MIGRATION PATH: M1 Pro → VENTUNO Q           │
-│                                                         │
-│  Mac M1 Pro          Arduino VENTUNO Q                  │
-│  ─────────────       ─────────────────────              │
-│  STT: mlx_whisper →  STT: faster_whisper                │
-│  LLM: ollama      →  LLM: llama_cpp (GGUF)              │
-│  TTS: ElevenLabs  →  TTS: Coqui XTTS v2 (local clone)  │
-│                                                         │
-│  Just 2 lines in .env — no code changes needed          │
-│                                                         │
-│  Qualcomm Dragonwing IQ8 — 40 TOPS NPU                 │
-│  16 GB LPDDR5 — runs Qwen2.5-3B at ~800ms/query        │
-└─────────────────────────────────────────────────────────┘
-```
 
-The entire backend is designed for **zero-code migration** — swap hardware by changing two environment variables.
+This architecture enables experimentation across heterogeneous AI hardware targets while preserving a unified application layer.
 
 ---
 
 ## 🌍 Language Support
 
-Kira is **primarily designed for French** and optimized for French Home Assistant entity names, aliases, and voice patterns. However, the architecture is fully language-agnostic:
+HomeCortex is primarily optimized for French interactions, including
+Home Assistant entity aliases, wake phrases, and conversational prompts.
 
-- Whisper supports 99 languages — change `LANGUAGE=fr` to any ISO code
-- Ollama runs any multilingual model (Qwen2.5, Mistral, Llama 3.2)
-- `prompt.txt` is the only file that needs translation
-- HA entity aliases work in any language
+However, the overall architecture remains fully language-agnostic and can be adapted to other languages without modifying the backend logic.
 
-**To adapt Kira to English or another language:**
-1. Change `LANGUAGE=en` in `.env`
-2. Translate `prompt.txt` to your language
-3. Update `WHISPER_HINT` keywords
-4. Replace ElevenLabs voice ID with your preferred voice
+### Supported Components
 
----
+- **Whisper** provides multilingual speech recognition (99+ languages)
+- **Ollama** enables multilingual LLM inference (Qwen2.5, Mistral, Llama 3.x)
+- **Home Assistant aliases** can be defined in any language
+- **Prompt behavior** is configurable through external prompt templates
+- **TTS providers** can be swapped independently of the inference pipeline
 
-## ⚡ Performance
+### Speech Recognition Vocabulary Injection
 
-Real-world latency on Mac M1 Pro (Apple Silicon, Wi-Fi satellite):
+To improve speech recognition accuracy in smart-home environments,
+Whisper contextual hints (`WHISPER_HINT`) are dynamically generated at startup by aggregating multiple vocabulary sources:
+
+```text
+1. Base language vocabulary
+   └─ config/lang/<lang>.yaml → whisper_hint_base
+
+2. Home Assistant entity aliases
+   └─ Home Assistant entity registry
+
+3. Forced phonetic vocabulary
+   └─ config/phonetic.yaml → force_vocabulary
+
+This mechanism improves recognition accuracy for:
+
+* Home Assistant entity names
+* Custom room and device aliases
+* Proper nouns and uncommon words
+* Phonetically ambiguous terms
+* Multilingual household environments
+
+Adapting to Another Language
+
+Minimal configuration changes are required:
+
+1. Set the target language in:
+
+
+config/kira.yaml
+    └── config.h                  # Satellite configuration
+
+
+2. Translate the assistant prompt templates
+3. Update the base vocabulary and phonetic rules:
+
+config/lang/<lang>.yaml
+config/phonetic.yaml
+
+
+4. Select an appropriate TTS voice (Replace ElevenLabs voice ID with your preferred voice)
+
+The runtime architecture remains unchanged, enabling language adaptation entirely through configuration without requiring backend code modifications.
 
 ```
-Request type              Latency    Path
-─────────────────────     ───────    ─────────────────────────────
-"Quelle heure est-il ?"   ~0.7s     Whisper → bypass (no LLM)
-"Allume lampe salon"      ~0.8s     Whisper → bypass HA direct
-"Quelle est la météo ?"   ~1.0s     Whisper → bypass → Open-Meteo (cached)
-"Température escalier ?"  ~0.6s     Whisper → bypass → HA sensor
-"Qui est Elon Musk ?"     ~3.5s     Whisper → LLM → web_search
-General conversation      ~3.0s     Whisper → LLM → ElevenLabs TTS
-```
 
-**Optimization layers:**
-- 🔀 **Smart bypass routing** — HA commands, time, weather skip the LLM entirely
-- 💾 **TTS cache** — repeated phrases served in 0ms (SQLite)
-- 🌤️ **Weather cache** — 15-minute cache avoids redundant API calls
-- 🔥 **Ollama keep_alive** — model stays hot in memory, no cold start
-- ⚡ **ElevenLabs Turbo** — `eleven_turbo_v2_5` at ~220ms vs 970ms for multilingual
+## 📂 Project Structure
 
----
-
-## 📦 Project Structure
-
-```
-kira-voice/
-├── server.py                     # FastAPI main — full pipeline
-├── prompt.txt                    # Kira's personality (loaded at startup)
+```text
+homecortex/
+├── server.py                    # Main FastAPI server
+├── prompt.txt                   # Kira personality system prompt
+├── prompt_suffix_fr.txt         # French runtime context and rules
+├── prompt_suffix_en.txt         # English runtime context and rules
 │
 ├── backends/
-│   ├── stt.py                    # STT abstraction (Whisper MLX / faster-whisper)
-│   ├── llm.py                    # LLM abstraction (Ollama / llama.cpp / OpenAI)
-│   ├── tts.py                    # TTS abstraction (ElevenLabs / Piper / XTTS)
-│   ├── memory.py                 # Long-term SQLite memory + query stats
-│   └── speaker.py                # Speaker identification (pyannote-audio)
+│   ├── stt.py                   # Speech-to-Text (Whisper MLX / faster-whisper)
+│   ├── llm.py                   # LLM inference (Ollama / llama.cpp)
+│   ├── tts.py                   # Text-to-Speech (Piper / ElevenLabs / XTTS)
+│   ├── memory.py                # SQLite conversational memory
+│   └── speaker.py               # Speaker identification (pyannote.audio)
 │
 ├── services/
-│   ├── get_weather.py            # Open-Meteo weather (free, no API key)
-│   ├── get_ha_state.py           # Read HA entity states
-│   ├── web_search.py             # DuckDuckGo search (no API key)
-│   ├── ha_entities_loader.py     # Dynamic HA entity + alias loading
-│   └── proactive.py              # Scheduled announcements (APScheduler)
+│   ├── config_loader.py         # Centralized YAML configuration loader
+│   ├── get_ha_state.py          # Home Assistant state retrieval
+│   ├── get_weather.py           # Weather service (wttr.in)
+│   ├── web_search.py            # DuckDuckGo web search
+│   ├── ha_entities_loader.py    # Home Assistant entity alias loader
+│   └── proactive.py             # Scheduled announcements (APScheduler)
 │
 ├── config/
-│   ├── satellites.json           # Satellite tokens → room mapping
-│   ├── tools_config.json         # LLM tool definitions
-│   ├── ha_entities.json          # HA entity cache (auto-generated)
-│   ├── kira_memory.db            # SQLite: facts, history, query stats
-│   └── tts_cache.db              # SQLite: TTS audio cache
-│
-├── HA/
-│   └── core.entity_registry      # Copied from HA — provides aliases
+│   ├── kira.yaml                # ⚙️ Main configuration
+│   ├── room_groups.yaml         # 💡 Room grouping definitions
+│   ├── personas.yaml            # 👥 Household users and name variants
+│   ├── phonetic.yaml            # 🔤 Whisper phonetic correction rules
+│   ├── tools_config.json        # 🛠️ LLM tool configuration
+│   ├── satellites.json          # 📡 Satellite tokens and room mapping
+│   ├── lang/
+│   │   ├── fr.yaml              # 🇫🇷 French keywords and responses
+│   │   └── en.yaml              # 🇬🇧 English keywords and responses
+│   └── kira_memory.db           # SQLite memory database (auto-generated)
 │
 ├── models/
-│   ├── piper/                    # Piper TTS voice models
-│   └── xtts/                     # Coqui XTTS speaker reference WAV
+│   └── piper/                   # Piper TTS models (.onnx)
 │
-└── esp32/
-    ├── kira_client.h             # ESP32-S3 full pipeline client
-    ├── kira_play_endpoint.h      # ESP32 HTTP /play endpoint (proactive TTS)
-    └── config.h                  # Satellite configuration
-```
+├── HA/
+│   └── core.entity_registry     # Home Assistant entity registry cache
+│
+└── kira-web/                    # Web interface (Go)
+    ├── kira-web-main.go
+    ├── kira-web.json
+    ├── templates/index.html
+    ├── static/
+    └── locales/
+
+---
+
 
 ---
 
 ## 🔄 Request Pipeline
+
+<p align="center">
+
+  <img src="imgs/kira_request_pipeline.svg" width="900">
+
+</p>
 
 ```
                     ┌─────────────────────────────────────────┐
