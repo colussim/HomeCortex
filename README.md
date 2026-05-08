@@ -842,6 +842,27 @@ The Chatbox runtime configuration is centralized in:
 chatbox/config/config.json
 ```
 
+This configuration file defines:
+
+* backend API endpoint,
+* authentication token,
+* UI behavior,
+* localization settings,
+* runtime parameters.
+
+Purpose
+
+The Chatbox interface serves multiple roles within the HomeCortex ecosystem:
+
+* debugging and development,
+* silent interaction without voice input,
+* backend testing,
+* multi-device access,
+* fallback interaction mode,
+* remote administration.
+
+This separation between voice satellites and textual interaction layers enables a modular multimodal architecture while keeping the backend fully unified.
+
 ---
 
 ## 🚀 Next Steps & Roadmap
