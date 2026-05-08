@@ -447,7 +447,7 @@ homecortex/
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/kira-voice.git
+git clone https://github.com/colussim/HomeCortex.git
 cd kira-voice
 
 # Create virtual environment
@@ -597,88 +597,97 @@ sudo apt install espeak-ng
 
 ---
 
-## 🔌 API Endpoints
+## 🔌 API Endpoints## 
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/transcribe` | Satellite token | Main pipeline — WAV in, JSON out |
-| `POST` | `/tts` | Satellite token | Text → WAV binary (16kHz mono) |
-| `POST` | `/alert` | Admin token | Proactive announcement → satellite |
-| `GET` | `/debug-auth` | Satellite token | Token diagnostic without audio |
-| `GET` | `/memory/stats` | Admin token | Most frequent queries |
-| `GET` | `/memory/facts` | Admin token | Memorized facts |
-| `DELETE` | `/tts/cache` | Admin token | Clear TTS cache |
-| `DELETE` | `/memory/{id}` | Admin token | Clear satellite history |
-| `GET` | `/health` | None | Server status + loaded models |
+All endpoints require the `X-Token` header with a valid satellite or chat token configured in `config/satellites.json`.
+
+### Voice processing
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/transcribe` | Receive WAV audio from a satellite, run STT + routing + TTS pipeline, return JSON with reply and WAV URL |
+| `POST` | `/tts` | Synthesize text to WAV audio (used by satellites to fetch the audio response) |
+| `POST` | `/chat` | Text-only interface — same routing pipeline as `/transcribe` without the STT step |
+
+**Example `/transcribe` response:**
+```json
+{
+  "status":       "success",
+  "heard":        "quelle est la température extérieure ?",
+  "room":         "salon",
+  "reply":        "La température extérieure est de 12 degrés.",
+  "ha_ack":       "no_action",
+  "category":     "SPEECH",
+  "expect_reply": false,
+  "tts_available": true
+}
+```
+
+### Speaker identification
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/enroll` | Register a voice profile — send a WAV file with `name` field |
+| `GET` | `/speakers` | List all enrolled voice profiles |
+| `DELETE` | `/speakers/{name}` | Delete a voice profile by name |
+
+**Example enrollment:**
+```bash
+curl -X POST http://localhost:8000/enroll \
+     -H "X-Token: YOUR_TOKEN" \
+     -F "name=Emmanuel" \
+     -F "audio=@/tmp/sample_30s.wav"
+```
+
+### Memory
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/memory/facts` | List all stored facts with their IDs |
+| `DELETE` | `/memory/facts/{id}` | Delete a specific fact by ID |
+
+### Proactive announcements
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/alert` | Push a text announcement to a specific satellite room |
+
+**Example alert:**
+```bash
+curl -X POST http://localhost:8000/alert \
+     -H "X-Token: YOUR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"room": "salon", "message": "Dinner is ready."}'
+```
+
+### TTS cache
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `DELETE` | `/tts/cache` | Clear the TTS response cache |
+| `GET` | `/tts/cache/stats` | Cache statistics (entries, total hits, size) |
+
+### System
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Server health check — returns status, loaded backends, entity count, uptime |
+
+**Example `/health` response:**
+```json
+{
+  "status":   "ok",
+  "stt":      "mlx_whisper",
+  "llm":      "ollama (qwen2.5:3b)",
+  "tts":      "elevenlabs",
+  "speaker":  false,
+  "entities": 78,
+  "uptime":   "3h 42m"
+}
+```
 
 ---
 
-## 🧠 Intelligence Layers
-
-### Smart Bypass Routing
-```
-Query type                  Bypass          Latency
-──────────────────────────  ──────────────  ───────
-"quelle heure est-il ?"    datetime.now()  ~0ms
-"allume [known entity]"     HA direct       ~0ms
-"quelle est la météo ?"    Open-Meteo      ~50ms (cached)
-"température escalier ?"   HA sensor       ~100ms
-Everything else             LLM (Ollama)    ~2000ms
-```
-
-### Long-term Memory (SQLite)
-- **Facts** — "Souviens-toi que j'aime la lumière tamisée" → stored forever
-- **History** — last N exchanges per satellite, survives restarts
-- **Query stats** — tracks frequent questions, adapts Kira's behavior
-- **Adaptive context** — auto-detects patterns ("Genève = default city")
-
-### HA Alias Integration
-Kira reads `core.entity_registry` directly from Home Assistant to load all voice aliases defined in Assist:
-```
-"chambre 1", "chambre un" → light.group_chambre1
-"petit salon"              → switch.lampe_petit_salon
-"escalier"                 → switch.lampe_escalier
-```
-No manual configuration needed — define aliases once in HA, Kira picks them up automatically.
-
----
-
-## 🗺️ Roadmap
-
-```
-✅ Done                          🔄 In Progress        📋 Planned
-──────────────────────────────   ─────────────────     ──────────────────────
-✅ Multi-satellite auth          🔄 Speaker ID         📋 VENTUNO Q migration
-✅ Whisper MLX STT               🔄 Coqui XTTS voice   📋 Vision (LLaVA)
-✅ Ollama LLM routing                                  📋 Multi-satellite sync
-✅ HA conversation API                                 📋 HA webhook alerts
-✅ ElevenLabs + Piper TTS                              📋 Timer/reminder tool
-✅ Smart bypass routing
-✅ Long-term SQLite memory
-✅ HA alias auto-loading
-✅ Room-aware entity resolution
-✅ Proactive announcements
-✅ TTS cache
-✅ Weather cache
-✅ DuckDuckGo web search
-✅ HA state queries
-```
-
----
-
-## 🔧 Hardware
-
-### Current: Apple Mac M1 Pro
-- 10-core CPU, 32 GB unified memory
-- Whisper runs on Neural Engine (~0.5s per utterance)
-- Ollama runs on GPU (qwen2.5:3b ~1.5s)
-- Always-on at ~15W
-
-### Satellites: ESP32-S3
-- ESP-SR framework (WakeNet + AFE + VADNet)
-- 16kHz mono audio capture
-- Direct WAV POST to backend over Wi-Fi
-- WAV playback via I2S speaker
 
 ### Next: Arduino VENTUNO Q
 ```
@@ -694,11 +703,6 @@ LLM_BACKEND=llama_cpp
 
 ---
 
-## 📜 License
-
-MIT License — see [LICENSE](LICENSE)
-
----
 
 ## 🙏 Acknowledgments
 
