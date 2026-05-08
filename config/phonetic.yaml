@@ -21,25 +21,18 @@ corrections:
   "HILO":    "ilot"       
 
   # -------------------------  Voice Commands ------------------------- 
-  "et un":   "éteins"      # "et un petit salon" → "éteins petit salon"
-  "et ain":  "éteins"      # variant
-  "étain":   "éteins"      # "étain" (metal) → "éteins"
-  "eteins":  "éteins"      # without accent
-  "salaud":  "salon"       # "lampe salaud" → "lampe salon"
+  "et un":   "éteins"      
+  "et ain":  "éteins"      
+  "étain":   "éteins"      
+  "eteins":  "éteins"      
+  "salaud":  "salon"       
   "salot":   "salon"
-  "allume":  "allume"      # OK — conserver
-  "alume":   "allume"      # une seule l
+  "allume":  "allume"      
+  "alume":   "allume"     
 
   # -------------------------  Proper nouns -------------------------
-  "gaulet":  "golay"       # "Marc Gaulet" → "Marc Golay"
+  "gaulet":  "golay"      
   "goalay":  "golay"
-  "Gaulet":  "golay"
-  "Goulet":  "golay"
-  "golait":  "golay"
-  "Godet":   "golay"
-  "Marc Gauley":  "Marc Golay"
-  "Marc Gaulet": "Marc Golay"
-  "collet":  "colussi"     # "Collet" → "Colussi"
   "colluci": "colussi"
   "colusi":  "colussi"
 
