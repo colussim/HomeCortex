@@ -813,6 +813,37 @@ curl -X POST http://localhost:8000/alert \
 
 ---
 
+## 💬 Chatbox Web Interface
+
+![chatbox](imgs/webchat.png)
+
+
+HomeCortex includes a lightweight web-based chat interface written in Go, available in:
+
+- [chatbox/](https://github.com/colussim/HomeCortex/tree/main/chatbox?utm_source=chatgpt.com)
+
+The Chatbox interface provides a real-time textual interaction layer for HomeCortex alongside the ESP32-S3 voice satellites.
+
+### Features
+
+- Real-time conversation interface
+- Direct interaction with the HomeCortex backend
+- Multi-language support
+- Lightweight Go backend
+- Responsive web UI
+- Session-based conversational context
+- Designed for local/self-hosted deployments
+
+### Configuration
+
+The Chatbox runtime configuration is centralized in:
+
+```text
+chatbox/config/config.json
+```
+
+---
+
 ## 🚀 Next Steps & Roadmap
 
 HomeCortex is actively evolving. The following improvements are planned to enhance performance, reduce latency, and enable edge intelligence on satellites.
