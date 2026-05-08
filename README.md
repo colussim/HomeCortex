@@ -689,21 +689,6 @@ curl -X POST http://localhost:8000/alert \
 ---
 
 
-### Next: Arduino VENTUNO Q
-```
-Qualcomm Dragonwing IQ8
-├── 40 TOPS NPU → Whisper + LLM inference
-├── 16 GB LPDDR5 → Qwen2.5-3B + Coqui XTTS
-└── Gigabit Ethernet → <10ms network latency
-
-Migration: change 2 lines in .env
-STT_BACKEND=faster_whisper
-LLM_BACKEND=llama_cpp
-```
-
----
-
-
 ## 🙏 Acknowledgments
 
 - [OpenAI Whisper](https://github.com/openai/whisper) — speech recognition
