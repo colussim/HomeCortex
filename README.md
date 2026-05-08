@@ -207,6 +207,50 @@ config/kira.yaml → tts.cache_db
 
 ---
 
+## 🛰️ ESP32-S3 Satellites
+
+HomeCortex communicates with distributed ESP32-S3 voice satellites over WiFi.
+
+The satellite firmware is developed separately in:
+
+- [ESP-myhome-EchoEar](https://github.com/colussim/ESP-myhome-EchoEar?utm_source=chatgpt.com)
+
+Current hardware platforms include:
+
+### ESP-VoCat v1.2 (Espressif)
+
+The current reference satellite is based on the official ESP-VoCat v1.2 development board by Espressif.
+
+Features:
+
+- ESP32-S3 dual-core MCU
+- Integrated audio codec
+- I2S microphone + speaker pipeline
+- Wake word detection
+- Voice Activity Detection (VAD)
+- Low-latency WiFi streaming
+
+This platform is used for rapid prototyping and real-world home deployment.
+
+---
+
+### DIY Satellite Platform (in development)
+
+A fully custom satellite hardware platform is currently under development.
+
+Goals include:
+
+- smaller form factor,
+- improved acoustic design,
+- optimized microphone array,
+- lower idle power consumption,
+- easier room integration,
+- fully open hardware design.
+
+The long-term objective is to create lightweight edge-native voice nodes optimized for always-on distributed AI interaction.
+
+---
+
 ## ✨ Features
 
 - 🎤 **Low-latency local speech recognition** using Whisper MLX optimized for Apple Silicon
@@ -356,7 +400,13 @@ homecortex/
 │   └── kira_memory.db           # SQLite memory database (auto-generated)
 │
 ├── models/
-│   └── piper/                   # Piper TTS models (.onnx)
+│   ├── piper/                   # Piper TTS voice models (.onnx + .json)
+│   │   ├── fr_FR-siwis-medium.onnx        # French neural voice (recommended)
+│   │   ├── fr_FR-siwis-medium.onnx.json   # Model config
+│   │   └── en_US-lessac-medium.onnx       # English neural voice (optional)
+│   │
+│   └── xtts/                    # XTTS v2 voice cloning samples (optional)
+│       └── speaker_kira.wav     # 20–30s reference recording for voice cloning
 │
 ├── HA/
 │   └── core.entity_registry     # Home Assistant entity registry cache
@@ -369,34 +419,8 @@ homecortex/
     └── locales/
 ```
 
----
 
-## ⚙️ Configuration
 
-HomeCortex follows a configuration-driven architecture.
-
-All runtime behavior, language settings, backend selection, satellites,
-personas, and automation rules are centralized in: `config/kira.yaml` 
-
-The `.env` file is intentionally limited to secrets and private tokens only.
-
-`.env` — Secrets Only
-
-```bash
-# API tokens and private credentials — NEVER COMMIT
-
-KIRA_API_TOKEN="your_admin_token"
-
-HA_TOKEN="your_home_assistant_token"
-HA_URL="http://IP_HA:8123/api"
-HA_URL_C="http://IP_HA:8123"
-
-ELEVENLABS_API_KEY="sk_..."
-# Optional — required only for ElevenLabs TTS
-
-HF_TOKEN="hf_..."
-# Optional — required only for pyannote speaker identification
-```
 ---
 
 ## 🔄 Request Pipeline
@@ -431,11 +455,17 @@ python3.11 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install fastapi uvicorn python-dotenv pyyaml requests
+pip install mlx-whisper                    # STT Apple Silicon
+pip install piper-tts                      # TTS local
+pip install pyannote.audio                 # Speaker ID (optionnel)
+pip install apscheduler pytz               # Annonces proactives (optionnel)
 
 # Configure
 cp .env.example .env
 # Edit .env with your HA URL, token, ElevenLabs key, etc.
+# Adjust kira.yaml according to your setup
+`config/kira.yaml` 
 
 # Copy HA entity registry (for voice aliases)
 mkdir -p HA
@@ -448,43 +478,122 @@ ollama pull qwen2.5:3b
 python server.py
 ```
 
-### Environment Variables
+
+### Configuration
+
+HomeCortex follows a configuration-driven architecture.
+
+All runtime behavior, language settings, backend selection, satellites,
+personas, and automation rules are centralized in: `config/kira.yaml` 
+
+The `.env` file is intentionally limited to secrets and private tokens only.
+
+`.env` — Secrets Only
 
 ```bash
-# ── Server ────────────────────────────────────
-KIRA_API_TOKEN=your_admin_token
-USE_LLM=1
+# API tokens and private credentials — NEVER COMMIT
 
-# ── STT (Speech-to-Text) ──────────────────────
-STT_BACKEND=mlx_whisper
-MODEL_STT=mlx-community/whisper-large-v3-turbo
-LANGUAGE=fr
+KIRA_API_TOKEN="your_admin_token"
 
-# ── LLM ───────────────────────────────────────
-LLM_BACKEND=ollama
-LLM_MODEL=qwen2.5:3b
-LLM_TEMPERATURE=0.7
-LLM_NUM_PREDICT=50
+HA_TOKEN="your_home_assistant_token"
+HA_URL="http://IP_HA:8123/api"
+HA_URL_C="http://IP_HA:8123"
 
-# ── TTS (Text-to-Speech) ──────────────────────
-ENABLE_ELEVENLABS=1                         # 1=ElevenLabs, 0=Piper
-ELEVENLABS_API_KEY=sk_...
-ELEVENLABS_VOICE_ID=your_voice_id
-ELEVENLABS_MODEL_ID=eleven_turbo_v2_5       # fast + quality
-TTS_CACHE_ENABLED=1
+ELEVENLABS_API_KEY="sk_..."
+# Optional — required only for ElevenLabs TTS
 
-# ── Home Assistant ─────────────────────────────
-HA_URL=http://192.168.1.x:8123/api          # with /api for conversation
-HA_URL_C=http://192.168.1.x:8123            # without /api for states
-HA_TOKEN=your_long_lived_access_token
-
-# ── Memory ─────────────────────────────────────
-MEMORY_DB=config/kira_memory.db
-
-# ── Proactive announcements ────────────────────
-PROACTIVE_ENABLED=1
-PROACTIVE_TZ=Europe/Paris
+HF_TOKEN="hf_..."
+# Optional — required only for pyannote speaker identification
 ```
+---
+
+
+## 🗣️ Voice models
+
+The `models/` directory holds local TTS assets — no internet connection required at inference time.
+
+### Piper (recommended)
+
+Piper models are compact neural voices (~60 MB each) that run in under 1 second on Apple Silicon or a Raspberry Pi 5. Download the model for your language and place both the `.onnx` and its companion `.onnx.json` config file in `models/piper/`.
+
+```bash
+mkdir -p models/piper
+
+# French voice
+wget -P models/piper \
+  https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx
+wget -P models/piper \
+  https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx.json
+
+# English voice (optional)
+wget -P models/piper \
+  https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx
+wget -P models/piper \
+  https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json
+```
+
+Set the active model in `config/kira.yaml`:
+
+```yaml
+tts:
+  piper_model: fr_FR-siwis-medium
+  piper_models_dir: models/piper
+```
+
+### XTTS v2 — voice cloning (optional)
+
+XTTS v2 clones a voice from a short audio sample and runs entirely locally. It produces the most natural-sounding output but adds ~1.5s latency compared to Piper.
+
+**Requirements:**
+
+```bash
+pip install TTS
+```
+
+**Create a speaker sample** — record 20–30 seconds of clean speech in a quiet environment:
+
+```bash
+# Record via terminal (requires sox)
+rec -r 22050 -c 1 models/xtts/speaker_kira.wav trim 0 25
+
+# Or convert an existing file
+ffmpeg -i your_recording.mp4 \
+       -ar 22050 -ac 1 -sample_fmt s16 \
+       models/xtts/speaker_kira.wav
+```
+
+Tips for a good sample: natural speech at a normal pace, no background noise, mix of questions and statements.
+
+**Configure in `.env`:**
+
+```bash
+XTTS_SPEAKER_WAV=models/xtts/speaker_kira.wav
+```
+
+The XTTS v2 model (~1.8 GB) downloads automatically from Hugging Face on first startup.
+
+### Fallback — espeak
+
+If neither Piper nor XTTS is configured, Kira falls back to `espeak` — a lightweight rule-based synthesizer with no additional dependencies, suitable for testing.
+
+```bash
+# macOS
+brew install espeak-ng
+
+# Linux / Raspberry Pi
+sudo apt install espeak-ng
+```
+
+### Comparison
+
+| Backend | Latency | Quality | Size | Requires internet |
+|---|---|---|---|---|
+| Piper | ~0.8s | ★★★★☆ | ~60 MB/voice | No |
+| XTTS v2 | ~1.5s | ★★★★★ | ~1.8 GB | No (download once) |
+| ElevenLabs | ~0.4s | ★★★★★ | — | Yes |
+| espeak | ~0.1s | ★★☆☆☆ | ~5 MB | No |
+
+
 
 ---
 
