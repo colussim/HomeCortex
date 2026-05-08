@@ -813,6 +813,60 @@ curl -X POST http://localhost:8000/alert \
 
 ---
 
+## 🚀 Next Steps & Roadmap
+
+HomeCortex is actively evolving. The following improvements are planned to enhance performance, reduce latency, and enable edge intelligence on satellites.
+
+### Phase 1: Neural Optimization 
+Implement PyTorch/TensorFlow quantization and pruning for **30-50% latency reduction** without retraining.
+
+- [ ] Export qwen2.5:3b to ONNX INT8 quantization
+- [ ] Benchmark latency improvement on Apple Silicon
+- [ ] Test model pruning (30% weight reduction)
+- [ ] Integrate quantized model into production
+
+**Expected:** LLM inference 2.0s → 1.2s
+
+---
+
+### Phase 2: Satellite AI Agents 
+Deploy lightweight TinyLLM agents on ESP32-S3 satellites for **local decision-making** and **5x faster response times**.
+
+- [ ] Design intent classification engine (light, temperature, blinds)
+- [ ] Implement local fallback mechanism
+- [ ] Create entity mapping configuration
+- [ ] Deploy agents to ESP32-S3 devices
+
+**Expected:** Local response time <150ms (vs 800ms server round-trip)
+
+---
+
+### Phase 3: Async Pipeline Optimization 
+Refactor server pipeline for parallel execution: STT + HA state, LLM + TTS simultaneously.
+
+- [ ] Convert server.py to async/await architecture
+- [ ] Implement parallel task execution
+- [ ] Add response caching and KV-cache optimization
+- [ ] Load test with 10+ concurrent satellites
+
+**Expected:** End-to-end latency 3.2s → 2.0s
+
+---
+
+### Phase 4: Domain Fine-tuning 
+Fine-tune models on smart home French vocabulary for **15-20% intent recognition improvement**.
+
+- [ ] Collect 5,000 smart home conversation dataset
+- [ ] Fine-tune qwen2.5:3b on domain data
+- [ ] Evaluate intent classification accuracy
+- [ ] Deploy fine-tuned model to production
+
+**Expected:** Intent recognition 85% → 95% accuracy
+
+
+
+---
+
 ## 🚀 Conclusion
 
 HomeCortex is an ongoing exploration of privacy-first conversational AI for smart environments.
