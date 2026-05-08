@@ -813,8 +813,27 @@ curl -X POST http://localhost:8000/alert \
 
 ---
 
-🚀 Conclusion
+## 🚀 Conclusion
 
+HomeCortex is an ongoing exploration of privacy-first conversational AI for smart environments.
+
+The project combines embedded systems, local LLM inference, distributed edge devices, multilingual speech processing, and adaptive memory architectures into a unified self-hosted platform designed for real-world usage.
+
+Beyond home automation, HomeCortex serves as an experimental framework for studying:
+
+- low-latency edge AI systems,
+
+- distributed voice interaction,
+
+- contextual conversational memory,
+
+- multimodal human-computer interaction,
+
+- and fully local AI inference pipelines.
+
+The long-term goal is to build a modular, hardware-agnostic voice AI ecosystem capable of running entirely on local infrastructure — from embedded ESP32-S3 satellites to dedicated edge AI accelerators.
+
+HomeCortex remains actively developed and continuously evolving across both software and hardware layers.
 
 ---
 
