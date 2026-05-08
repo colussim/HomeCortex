@@ -263,48 +263,6 @@ homecortex/
 
 </p>
 
-```
-                    ┌─────────────────────────────────────────┐
-   ESP32 POST       │           process_kira()                │
-   /transcribe ───► │                                         │
-   (WAV bytes)      │  1. authenticate_satellite()            │
-                    │     X-Token → {room, id, location}      │
-                    │                                         │
-                    │  2. transcribe_audio()                  │
-                    │     Whisper MLX → text                  │
-                    │     (WHISPER_HINT = HA aliases)         │
-                    │                                         │
-                    │  3. Smart bypass routing                │
-                    │     ├─ Time/date?    → instant reply    │
-                    │     ├─ HA sensor?   → get_ha_state()   │
-                    │     ├─ HA command?  → execute_category()│
-                    │     └─ Weather?     → get_weather()     │
-                    │                                         │
-                    │  4. router_llm() [if no bypass]         │
-                    │     ├─ tool_calls  → services/          │
-                    │     └─ text reply  → SPEECH             │
-                    │                                         │
-                    │  5. Return JSON                         │
-                    └──────────────┬──────────────────────────┘
-                                   │
-                    ┌──────────────▼──────────────────────────┐
-                    │  {                                      │
-                    │    "status":   "success",               │
-                    │    "heard":    "Allume lampe salon",    │
-                    │    "reply":    "Lampe salon allumée.",  │
-                    │    "category": "HA",                    │
-                    │    "ha_ack":   "ok",                    │
-                    │    "expect_reply": false                │
-                    │  }                                      │
-                    └──────────────┬──────────────────────────┘
-                                   │
-         ┌─────────────────────────▼──────────────────────────┐
-         │  ESP32 decision                                     │
-         │  category == "HA"     → play fixed audio file      │
-         │  category == "SPEECH" → POST /tts → WAV → I2S     │
-         └─────────────────────────────────────────────────────┘
-```
-
 ---
 
 ## 🛠️ Installation
