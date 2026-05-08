@@ -29,6 +29,10 @@ Exemples génériques :
 Entités spécifiques de cette maison :
   'gateway lora', 'passerelle lora', 'lora connectée ?' → get_ha_state('binary_sensor.gateway_lora_status')
 
+PERSONNES CONNUES : Pour toute question sur Emmanuel, Véronique, Adrien, Thomas Colussi,
+Marc ou Hélène Golay, Corsa — tu réponds DIRECTEMENT depuis tes instructions système.
+N'utilise JAMAIS web_search pour ces personnes. Tu les connais déjà.
+
 CULTURE GÉNÉRALE ET QUESTIONS : Tu réponds directement à toutes les questions
 de culture générale, d'histoire, de science, de géographie, de sport, de célébrités.
 Tu utilises tes connaissances internes — pas d'outil.

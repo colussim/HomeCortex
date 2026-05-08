@@ -450,16 +450,33 @@ def normalize_for_ha(text: str, room: str = "") -> str:
             print(f"  HA room resolve [{room}] : '{text}' -> '{verb}, {matched_name}'")
             return f"{verb}, {matched_name}"
         elif len(candidates) > 1:
-            matched_name = candidates[0]["name"]
-            verb = text.strip().split()[0] if text.strip() else ""
-            print(f"  HA room resolve [{room}] multi : '{text}' -> '{verb}, {matched_name}'")
-            return f"{verb}, {matched_name}"
+            _best = None
+            for _cand in candidates:
+                _cname = _cand["name"].lower()
+                if _cname in lower_text:
+                    _best = _cand
+                    break
+            # Vérifier aussi dans HA_ALIAS_MAP
+            if not _best and HA_ALIAS_MAP:
+                for _alias, _eid in sorted(HA_ALIAS_MAP.items(), key=lambda x: len(x[0]), reverse=True):
+                    if _alias in lower_text:
+                        # Trouver le candidat correspondant
+                        for _cand in candidates:
+                            if _cand["entity_id"] == _eid:
+                                _best = _cand
+                                break
+                        if _best:
+                            break
+                matched_name = _best["name"] if _best else candidates[0]["name"]
+                verb = text.strip().split()[0] if text.strip() else ""
+                print(f"  HA room resolve [{room}] multi : '{text}' -> '{verb}, {matched_name}'")
+                return f"{verb}, {matched_name}"
 
     # Apply Whisper phonetic corrections
     import re as _re
     text_fixed = text
-    for wrong, correct in WHISPER_PHONETIC_FIXES.items():
-        text_fixed = _re.sub(rf"(?i)\b{wrong}\b", correct, text_fixed)
+    for wrong, correct in PHONETIC.corrections.items():
+        text_fixed = _re.sub(rf"(?i)\\b{re.escape(wrong)}\\b", correct, text_fixed)
     if text_fixed != text:
         print(f"  Phonetic correction : '{text}' → '{text_fixed}'")
         text = text_fixed
@@ -923,7 +940,7 @@ async def process_kira(request: Request):
                     _eid = HA_ALIAS_MAP[_alias]
                     if is_sensor_q and _eid.startswith(("sensor.", "binary_sensor.")):
                         _matched_eid, _matched_alias = _eid, _alias; break
-                    elif is_state_q and not _eid.startswith(("sensor.", "binary_sensor.")):
+                    elif is_state_q and not _eid.startswith("sensor."):
                         _matched_eid, _matched_alias = _eid, _alias; break
             if _matched_eid:
                 try:

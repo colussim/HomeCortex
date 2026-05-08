@@ -193,6 +193,12 @@ responses:
     - "novembre"
     - "décembre"
 
+ # Boîte aux lettres
+mail_detected:    "Oui, vous avez du courrier."
+mail_empty:       "Non, aucun courrier détecté."
+parcel_detected:  "Oui, un colis a été déposé."
+parcel_empty:     "Non, aucun colis détecté."
+
 # ── États HA (get_ha_state.py) ────────────────────────────────────────────────
 ha_states:
   # Lampes / switches
@@ -220,11 +226,6 @@ ha_states:
   connectivity_on:  "en ligne"
   connectivity_off: "hors ligne"
 
-  # Boîte aux lettres
-  mail_detected:    "Oui, vous avez du courrier."
-  mail_empty:       "Non, aucun courrier détecté."
-  parcel_detected:  "Oui, un colis a été déposé."
-  parcel_empty:     "Non, aucun colis détecté."
 
   # Phrases de réponse
   light_reply:      "La {name} est {state}."

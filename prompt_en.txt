@@ -80,4 +80,4 @@ A human first name is never a home automation command.
 WEATHER: You MUST use the get_weather tool.
 Never generate weather data from memory.
 
-TOOLS: Rephrase tool results exactly in French, without adding information.
+TOOLS: Rephrase tool results exactly in English, without adding information.

@@ -16,6 +16,9 @@ corrections:
   "zigby":   "zigbee"      # "zigby" → "zigbee"
   "zigbi":   "zigbee"
   "zwave":   "z-wave"
+  "ilo":    "ilot"  
+  "ILO":    "ilot"   
+  "HILO":    "ilot"       
 
   # -------------------------  Voice Commands ------------------------- 
   "et un":   "éteins"      # "et un petit salon" → "éteins petit salon"
@@ -57,3 +60,4 @@ force_vocabulary:
   - "salon"
   - "escalier"
   - "entrée"
+  - "ilot"

@@ -153,16 +153,17 @@ ha_states:
   door_closed:      "closed"
   connectivity_on:  "online"
   connectivity_off: "offline"
-  mail_detected:    "Yes, you have mail."
-  mail_empty:       "No mail detected."
-  parcel_detected:  "Yes, a parcel has been delivered."
-  parcel_empty:     "No parcel detected."
   light_reply:      "The {name} is {state}."
   sensor_reply:     "The {type} in {location} is {value} {unit}."
   cover_reply:      "The {name} is {state}."
   binary_reply:     "{name} is {state}."
   unknown:          "Could not get the state of {name}."
   unavailable:      "{name} is unavailable."
+
+mail_detected:    "Yes, you have mail."
+mail_empty:       "No mail detected."
+parcel_detected:  "Yes, a parcel has been delivered."
+parcel_empty:     "No parcel detected."
 
 personalization:
   short_reply: "{reply}, {name}."
