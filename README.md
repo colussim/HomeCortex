@@ -34,59 +34,175 @@ HomeCortex explores the convergence of edge computing, embedded systems, local L
 ## 🎯 Design Goals
 
 - Privacy-first local AI
-
 - Low-latency voice interaction
-
 - Modular backend architecture
-
 - Edge-compatible satellite devices
-
 - Apple Silicon optimized inference
-
 - Seamless Home Assistant integration
 
 ---
 
 ## 🏗️ Architecture
 
-```mermaid
-flowchart LR
+<p align="center">
 
-    subgraph SAT["ESP32-S3 Satellite"]
-        A[Wake Word<br/>WakeNet + VAD]
-        B[I2S Mic / Speaker]
-    end
+  <img src="imgs/kira_architecture_v7.svg" width="900">
 
-    subgraph SERVER["Mac M1 / ARM Server"]
-        C[FastAPI Server]
+</p>
 
-        subgraph AI["AI Pipeline"]
-            D[STT<br/>Whisper MLX]
-            E[LLM<br/>Ollama]
-            F[TTS<br/>Piper / EdgeTTS]
-        end
 
-        subgraph SERVICES["Services"]
-            G[Home Assistant State]
-            H[Weather Service]
-            I[Entity Loader]
-        end
-    end
+---
 
-    J[Home Assistant]
+## 🧠 Memory Architecture
 
-    A -->|WAV Audio| C
-    C --> D
-    D --> E
-    E --> F
-    F -->|TTS WAV| A
+HomeCortex implements a lightweight persistent memory system built on SQLite (`config/kira_memory.db`).
 
-    E --> G
-    E --> H
-    E --> I
+The architecture combines semantic memory, episodic conversation history, adaptive interaction patterns, speaker profiles, and TTS caching within a unified local database.
 
-    G --> J
-    I --> J
+All memory layers persist across server restarts while remaining fully local and privacy-preserving.
+
+---
+
+### Semantic Memory — Facts
+
+Semantic memory stores persistent facts about the household, users, devices, and preferences.
+
+Facts can be:
+
+- explicitly provided by users,
+- extracted automatically from conversations,
+- inferred from repeated interaction patterns.
+
+Examples:
+
+```text
+"Emmanuel prefers 19°C at night"
+"The guest bedroom light is controlled by the switch near the door"
+```
+
+Stored facts are automatically injected into the LLM system prompt under:
+
+```text
+WHAT YOU KNOW ABOUT THE HOME
+```
+
+This allows HomeCortex to maintain long-term contextual awareness without requiring users to repeat information across sessions.
+
+#### Memory API
+
+```bash
+# View stored facts
+curl -H "X-Token: YOUR_TOKEN" \
+http://localhost:8000/memory/facts
+
+# Delete a fact by ID
+curl -X DELETE -H "X-Token: YOUR_TOKEN" \
+http://localhost:8000/memory/facts/3
+```
+
+---
+
+### Episodic Memory — Conversation History
+
+The last *N* exchanges per satellite are stored in SQLite
+(default: `20`, configurable through `config/kira.yaml → memory.max_history`).
+
+During each LLM inference call, recent conversation history is prepended to the messages context window, enabling conversational continuity even after server restarts.
+
+Each satellite maintains an independent conversation history:
+
+```text
+Bedroom conversations remain isolated from kitchen interactions.
+```
+
+This prevents contextual leakage across rooms and preserves localized conversational context.
+
+---
+
+### Adaptive Context — Learned Habits
+
+HomeCortex continuously tracks recurrent interaction patterns through the `query_stats` table.
+
+Once a pattern exceeds a configurable repetition threshold
+(default: `10` occurrences), it is automatically promoted into the runtime system context as a learned habit.
+
+Example:
+
+```text
+LEARNED HABITS:
+- Favorite weather city: Geneva (47 requests)
+- Frequent action: living room light (23 requests)
+```
+
+This adaptive layer enables HomeCortex to:
+
+- reduce clarification requests,
+- improve intent prediction,
+- infer preferred defaults automatically,
+- provide more natural long-term interactions.
+
+---
+
+### Unified SQLite Schema
+
+```sql
+facts
+(
+    id,
+    content,
+    source,
+    created,
+    updated
+)
+
+history
+(
+    id,
+    satellite_id,
+    role,
+    content,
+    created
+)
+
+query_stats
+(
+    id,
+    intent,
+    canonical,
+    count,
+    last_seen,
+    extra
+)
+
+speaker_profiles
+(
+    id,
+    name,
+    embedding,
+    n_samples,
+    created,
+    updated
+)
+
+tts_cache
+(
+    hash,
+    text,
+    wav,
+    backend,
+    hits,
+    created,
+    last_hit
+)
+```
+
+By default, `speaker_profiles` and `tts_cache` share the same SQLite database file.
+
+The storage layout can be separated through:
+
+```text
+config/kira.yaml → memory.db
+config/kira.yaml → tts.cache_db
 ```
 
 ---
@@ -253,6 +369,34 @@ homecortex/
     └── locales/
 ```
 
+---
+
+## ⚙️ Configuration
+
+HomeCortex follows a configuration-driven architecture.
+
+All runtime behavior, language settings, backend selection, satellites,
+personas, and automation rules are centralized in: `config/kira.yaml` 
+
+The `.env` file is intentionally limited to secrets and private tokens only.
+
+`.env` — Secrets Only
+
+```bash
+# API tokens and private credentials — NEVER COMMIT
+
+KIRA_API_TOKEN="your_admin_token"
+
+HA_TOKEN="your_home_assistant_token"
+HA_URL="http://IP_HA:8123/api"
+HA_URL_C="http://IP_HA:8123"
+
+ELEVENLABS_API_KEY="sk_..."
+# Optional — required only for ElevenLabs TTS
+
+HF_TOKEN="hf_..."
+# Optional — required only for pyannote speaker identification
+```
 ---
 
 ## 🔄 Request Pipeline
