@@ -172,7 +172,7 @@ Whisper contextual hints (`WHISPER_HINT`) are dynamically generated at startup b
    └─ config/lang/<lang>.yaml → whisper_hint_base
 
 2. Home Assistant entity aliases
-   └─ Home Assistant entity registry
+   └─ HA/core.entity_regsitry  → Home Assistant entity registry
 
 3. Forced phonetic vocabulary
    └─ config/phonetic.yaml → force_vocabulary
@@ -190,18 +190,12 @@ Adapting to Another Language
 Minimal configuration changes are required:
 
 1. Set the target language in:
-
-
-config/kira.yaml
-    └── config.h                  # Satellite configuration
-
+   └─ config/kira.yaml 
 
 2. Translate the assistant prompt templates
 3. Update the base vocabulary and phonetic rules:
-
-config/lang/<lang>.yaml
-config/phonetic.yaml
-
+   └─ config/lang/<lang>.yaml
+   └─ config/phonetic.yaml
 
 4. Select an appropriate TTS voice (Replace ElevenLabs voice ID with your preferred voice)
 
@@ -257,9 +251,7 @@ homecortex/
     ├── templates/index.html
     ├── static/
     └── locales/
-
----
-
+```
 
 ---
 
