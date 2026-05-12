@@ -213,7 +213,7 @@ HomeCortex communicates with distributed ESP32-S3 voice satellites over WiFi.
 
 The satellite firmware is developed separately in:
 
-- [ESP-myhome-EchoEar](https://github.com/colussim/ESP-myhome-EchoEar?utm_source=chatgpt.com)
+- [ESP-myhome-EchoEar](https://github.com/colussim/ESP-myhome-EchoEar)
 
 Current hardware platforms include:
 
