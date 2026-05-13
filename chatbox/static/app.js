@@ -29,7 +29,7 @@ function getRoom() {
   return roomSelect.value;
 }
 
-// Traductions injectées depuis le template Go
+// Translations injected from the Go template
 const i18n = window.KIRA_I18N || {
   statusOnline: 'online', statusOffline: 'offline',
   badgeHaOk: 'HA · OK', badgeHaErr: 'HA · ERR', badgeSpeech: 'SPEECH',
@@ -51,7 +51,7 @@ function scrollBottom() {
   });
 }
 
-/* ── DOM builders ────────────────────────────────────────────────────────── */
+/* ── DOM builders ── */
 
 function addUserMsg(text) {
   if (!hasMessages) {
@@ -111,7 +111,7 @@ function addErrorMsg(err) {
   scrollBottom();
 }
 
-/* ── Send ────────────────────────────────────────────────────────────────── */
+/* ── Send ── */
 
 async function send(text) {
   if (!text.trim() || isLoading) return;
@@ -151,7 +151,7 @@ function sendSuggestion(el) {
   send(el.textContent);
 }
 
-/* ── Health check ────────────────────────────────────────────────────────── */
+/* ── Health check ── */
 
 async function checkHealth() {
   try {
@@ -168,7 +168,7 @@ async function checkHealth() {
   }
 }
 
-/* ── Event listeners ─────────────────────────────────────────────────────── */
+/* ── Event listeners ── */
 
 // Auto-resize textarea
 inputEl.addEventListener('input', function () {
@@ -199,7 +199,7 @@ sendBtn.addEventListener('click', function () {
   }
 });
 
-/* ── Init ────────────────────────────────────────────────────────────────── */
+/* ── Init ── */
 
 checkHealth();
 setInterval(checkHealth, 60000);

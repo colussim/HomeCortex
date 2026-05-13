@@ -25,14 +25,14 @@ import (
 	"runtime"
 	"time"
 
-	// embed.FS : les fichiers templates/ et static/ sont embarqués
-	// dans le binaire à la compilation — un seul binaire standalone
+	// embed.FS : templates files / and static/ are embedded
+	// in the binary at compile time — a single standalone binary
 	_ "embed"
 )
 
 // ── Embedded files ────────────────────────────────────────────────────────────
-// Ces directives embarquent les fichiers dans le binaire au moment du build.
-// Modifier templates/index.html ou static/* puis recompiler.
+// These directives embed the files into the binary at build time.
+// Modify templates/index.html or static/* and then recompile.
 
 //go:embed templates/index.html
 var indexHTML string
@@ -46,8 +46,7 @@ var appJS string
 //go:embed static/imgs
 var appImgs string
 
-// ── Config ────────────────────────────────────────────────────────────────────
-
+// ── Config ───────
 type Config struct {
 	BackendURL  string   `json:"backend_url"`
 	Web         WebConf  `json:"web"`
@@ -65,7 +64,7 @@ type WebConf struct {
 	OpenBrowser bool   `json:"open_browser"`
 }
 
-// ── Localisation ──────────────────────────────────────────────────────────────
+// ── Localisation ───────
 
 type Locale struct {
 	Lang             string   `json:"lang"`
@@ -109,12 +108,12 @@ func loadConfig(filename string) (Config, error) {
 }
 
 func loadLocale(lang string) error {
-	// Charger depuis locales/<lang>.json
+	// Load from locales/<lang>.json
 	path := fmt.Sprintf("locales/%s.json", lang)
 	data, err := os.ReadFile(path)
 	if err != nil {
-		// Fallback français embarqué si fichier absent
-		fmt.Printf("   locales/%s.json introuvable — fallback fr", lang)
+		// Fallback to embedded French if file is missing
+		fmt.Printf("   locales/%s.json not found — fallback fr", lang)
 		return err
 	}
 	if err := json.Unmarshal(data, &locale); err != nil {
@@ -147,7 +146,7 @@ func loadChatToken(path string) string {
 	return ""
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Types ─────
 
 type ChatRequest struct {
 	Text string `json:"text"`
@@ -175,7 +174,7 @@ type WebResponse struct {
 	Error    string `json:"error,omitempty"`
 }
 
-// TemplateData contient les variables injectées dans index.html
+// TemplateData contains the variables injected into index.html
 type TemplateData struct {
 	Rooms       []string
 	DefaultRoom string
@@ -185,7 +184,7 @@ type TemplateData struct {
 	L           Locale
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Main ─────────
 
 func main() {
 	var err error
@@ -236,7 +235,7 @@ func main() {
 	}
 }
 
-// ── Handlers ──────────────────────────────────────────────────────────────────
+// ── Handlers ─────────
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -278,8 +277,8 @@ func handleJS(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleImgs(w http.ResponseWriter, r *http.Request) {
-	// Sert les images depuis static/imgs/ sur le disque
-	// Les images ne sont pas embarquées dans le binaire — modifiables sans recompiler
+	// Serves images from static/imgs/ on disk
+	// Images are not embedded in the binary — modifiable without recompiling
 	filePath := "." + r.URL.Path // ex: ./static/imgs/kira.png
 	http.ServeFile(w, r, filePath)
 }
@@ -332,7 +331,7 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Write(body)
 }
 
-// ── Kira proxy ────────────────────────────────────────────────────────────────
+// ── Kira proxy ─────
 
 func forwardToKira(text, room string) (*ChatResponse, error) {
 	payload, _ := json.Marshal(ChatRequest{Text: text, Room: room})
@@ -361,7 +360,7 @@ func forwardToKira(text, room string) (*ChatResponse, error) {
 	return &cr, nil
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers ────
 
 func writeJSON(w http.ResponseWriter, v any, code int) {
 	w.Header().Set("Content-Type", "application/json")

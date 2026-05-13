@@ -1,7 +1,7 @@
 {
   "_comment": "Kira Web Chat — configuration file",
 
-  "backend_url": "http://192.168.0.13:8000",
+  "backend_url": "http://X.X.X.X:8000",
 
   "web": {
     "host": "0.0.0.0",
@@ -9,8 +9,8 @@
     "open_browser": true
   },
  
-  "rooms": ["chat_Emmanuel"],
-  "default_room": "chat_Emmanuel",
+  "rooms": ["chat_XXX"],
+  "default_room": "chat_XXX",
   "version": "1.0.0",
   "logo": "kira.png",
   "language": "en",

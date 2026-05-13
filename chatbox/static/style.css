@@ -1,4 +1,4 @@
-/* ── Reset & Variables ────────────────────────────────────────────────────── */
+/* ── Reset & Variables ── */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -33,7 +33,7 @@ body {
   overflow: hidden;
 }
 
-/* ── Header ───────────────────────────────────────────────────────────────── */
+/* ── Header ── */
 
 header {
   display: flex;
@@ -106,8 +106,7 @@ header {
 }
 .room-selector option { background: var(--bg3); }
 
-/* ── Messages area ────────────────────────────────────────────────────────── */
-
+/* ── Messages area ── */
 .messages {
   flex: 1;
   overflow-y: auto;
@@ -122,7 +121,7 @@ header {
 .messages::-webkit-scrollbar-track { background: transparent; }
 .messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-/* ── Welcome screen ───────────────────────────────────────────────────────── */
+/* ── Welcome screen ── */
 
 .welcome {
   flex: 1;
@@ -184,8 +183,7 @@ header {
   background: rgba(91,138,240,0.08);
 }
 
-/* ── Message bubbles ──────────────────────────────────────────────────────── */
-
+/* ── Message bubbles ── */
 .msg {
   display: flex;
   flex-direction: column;
@@ -230,7 +228,7 @@ header {
   padding: 0 4px;
 }
 
-/* ── Badges ───────────────────────────────────────────────────────────────── */
+/* ── Badges ── */
 
 .badge {
   font-size: 10px;
@@ -252,7 +250,7 @@ header {
   font-family: 'DM Mono', monospace;
 }
 
-/* ── Typing indicator ─────────────────────────────────────────────────────── */
+/* ── Typing indicator ── */
 
 .typing {
   display: flex;
@@ -280,7 +278,7 @@ header {
   30% { transform: translateY(-6px); background: var(--accent); }
 }
 
-/* ── Input area ───────────────────────────────────────────────────────────── */
+/* ── Input area ── */
 
 .input-area {
   padding: 16px 24px 20px;
