@@ -16,7 +16,7 @@
 
 ## ✨ What is HomeCortex?
 
-HomeCortex is an open-source, self-hosted AI backend for smart homes. It connects ESP32-S3 voice satellites to Home Assistant, processes natural language locally using LLMs, and generates natural voice responses — all without sending a single byte to the cloud.
+HomeCortex is an open-source, self-hosted AI backend for smart homes. It connects ESP32-S3 voice satellites to Home Assistant, processes natural language locally using LLMs, and generates natural voice responses all without sending a single byte to the cloud.
 
 Kira is the default voice assistant powered by HomeCortex.
 
