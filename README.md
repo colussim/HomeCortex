@@ -7,7 +7,7 @@
 # 🎙️ HomeCortex — Local Voice AI for Smart Home
 ![homecortex](imgs/homecortex.jpg)
 
-> **A fully local, privacy-first voice assistant backend for Home Assistant.**  
+> **A fully local, privacy first voice assistant backend for Home Assistant.**  
 > No cloud. No subscriptions. No data leaving your network.
 
 
@@ -26,7 +26,7 @@ The platform is designed with a privacy-first and edge-native architecture, enab
 
 Although primarily designed for French language interactions, the platform also supports English and can be extended to additional languages.
 
-HomeCortex explores the convergence of edge computing, embedded systems, local LLM inference, and real-time voice-driven AI applications for next-generation smart environments.
+HomeCortex explores the convergence of edge computing, embedded systems, local LLM inference, and real-time voice driven AI applications for next generation smart environments.
 
 
 ---
@@ -923,7 +923,7 @@ Fine-tune models on smart home French vocabulary for **15-20% intent recognition
 
 HomeCortex is an ongoing exploration of privacy-first conversational AI for smart environments.
 
-The project combines embedded systems, local LLM inference, distributed edge devices, multilingual speech processing, and adaptive memory architectures into a unified self-hosted platform designed for real-world usage.
+The project combines embedded systems, local LLM inference, distributed edge devices, multilingual speech processing, and adaptive memory architectures into a unified self hosted platform designed for real-world usage.
 
 Beyond home automation, HomeCortex serves as an experimental framework for studying:
 
@@ -937,7 +937,7 @@ Beyond home automation, HomeCortex serves as an experimental framework for study
 
 - and fully local AI inference pipelines.
 
-The long-term goal is to build a modular, hardware-agnostic voice AI ecosystem capable of running entirely on local infrastructure — from embedded ESP32-S3 satellites to dedicated edge AI accelerators.
+The long term goal is to build a modular, hardware-agnostic voice AI ecosystem capable of running entirely on local infrastructure from embedded ESP32-S3 satellites to dedicated edge AI accelerators.
 
 HomeCortex remains actively developed and continuously evolving across both software and hardware layers.
 
