@@ -142,7 +142,7 @@ func (s *server) createBackup(ctx context.Context, includeTTS bool, reason strin
 	defer os.Remove(tempPath)
 	writer := zip.NewWriter(temp)
 	manifest := backupManifest{
-		Format: 1, CreatedAt: now, HomeCortex: "1.2.0-dev",
+		Format: 1, CreatedAt: now, HomeCortex: "1.2.1",
 		IncludesSecrets: true, IncludesTTS: includeTTS, Reason: reason,
 	}
 	manifestData, _ := json.MarshalIndent(manifest, "", "  ")

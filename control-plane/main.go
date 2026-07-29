@@ -144,7 +144,7 @@ func (s *server) handleSystem(w http.ResponseWriter, _ *http.Request) {
 		"os":       runtime.GOOS,
 		"arch":     runtime.GOARCH,
 		"root":     s.root,
-		"version":  "1.2.0-dev",
+		"version":  "1.2.1",
 		"time":     time.Now(),
 	})
 }

@@ -11,30 +11,69 @@
 > No cloud. No subscriptions. No data leaving your network.
 
 > [!NOTE]
-> The v1.2 release introduces an automated, configuration-first deployment
+> The v1.2.1 release provides an automated, configuration-first deployment
 > flow and a local Go/React Control Plane. ElevenLabs, weather and web-search
 > integrations remain optional network services selected by the operator.
 
-## HomeCortex v1.2 deployment preview
+## Install HomeCortex v1.2.1
 
-Create a private initialization kit, validate it, then inspect the installation
-plan:
+Ollama is a required external prerequisite. Install and start
+[Ollama](https://ollama.com/download) before running HomeCortex.
+
+### Option A — stable Git release (recommended)
 
 ```bash
-./scripts/create-init.sh
-# Edit init/.env, init/config/ and init/prompts/
+git clone --branch v1.2.1 --depth 1 https://github.com/colussim/HomeCortex.git
+cd HomeCortex
+
+./scripts/create-init.sh ./init
+# Edit init/.env, init/config/ and init/prompts/.
 ./install.sh --init-dir ./init --validate-only
-./install.sh --init-dir ./init --dry-run
+./install.sh --init-dir ./init
 ```
 
-Build the local dashboard and Control Plane:
+To move to a later stable release:
 
 ```bash
-./scripts/build-control-plane.sh
-./control-plane/homecortex-control --root "$PWD"
+git fetch --tags
+git checkout v1.2.2
+./update.sh --init-dir ./init
 ```
 
-Open `http://127.0.0.1:3210`.
+### Option B — GitHub Release archive
+
+This package includes the prebuilt macOS ARM64 Control Plane:
+
+```bash
+curl -LO https://github.com/colussim/HomeCortex/releases/download/v1.2.1/HomeCortex-v1.2.1-macos-arm64.tar.gz
+tar -xzf HomeCortex-v1.2.1-macos-arm64.tar.gz
+cd HomeCortex-v1.2.1
+
+./scripts/create-init.sh "$HOME/HomeCortex-init"
+# Edit the private kit outside the extracted release directory.
+./install.sh --init-dir "$HOME/HomeCortex-init"
+```
+
+Keeping the private initialization kit outside an extracted archive makes
+future archive-based updates safer:
+
+```bash
+./update.sh --init-dir "$HOME/HomeCortex-init"
+```
+
+### Option C — development branch
+
+```bash
+git clone https://github.com/colussim/HomeCortex.git
+cd HomeCortex
+git switch main
+```
+
+The `main` branch may contain changes that have not yet been released. Use a
+version tag or GitHub Release for stable installations.
+
+After installation, open the local dashboard at
+`http://127.0.0.1:3210`.
 
 Detailed documentation:
 

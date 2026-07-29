@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homecortex"
-version = "1.2.0"
+version = "1.2.1"
 description = "Local-first voice AI backend for smart homes"
 requires-python = ">=3.14,<3.15"
 dependencies = [
@@ -42,4 +42,3 @@ observability = [
 
 [tool.setuptools]
 py-modules = ["server"]
-

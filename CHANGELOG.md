@@ -7,6 +7,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+No unreleased changes.
+
+## [1.2.1] - 2026-07-29
+
 ### Added
 
 - Structured known-person responses in `config/personas.yaml`.
@@ -117,6 +121,7 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   examples during the v1.1 development cycle.
 - Refined prompts, phonetic corrections and Home Assistant configuration.
 
-[Unreleased]: https://github.com/colussim/HomeCortex/compare/v1.2...HEAD
+[Unreleased]: https://github.com/colussim/HomeCortex/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/colussim/HomeCortex/compare/v1.2...v1.2.1
 [1.2.0]: https://github.com/colussim/HomeCortex/releases/tag/v1.2
 [1.1.0]: https://github.com/colussim/HomeCortex/releases/tag/v1.1

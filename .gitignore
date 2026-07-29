@@ -1,0 +1,11 @@
+.DS_Store
+**/.DS_Store
+.env
+init/
+__pycache__/
+*.py[cod]
+.venv/
+data/*.db
+control-plane/web/node_modules/
+control-plane/homecortex-control
+/dist/
