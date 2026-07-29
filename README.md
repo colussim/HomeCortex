@@ -289,7 +289,7 @@ The long-term objective is to create lightweight edge-native voice nodes optimiz
 - 🔊 **Natural speech synthesis** with Piper (local) or ElevenLabs (cloud)
 - 🏠 **Home Assistant integration** for contextual device control and state retrieval
 - 🎙️ **Speaker identification** using pyannote.audio for personalized interactions
-- 💬 **Web chat interface** built with Go (`kira-web`)
+- 💬 **Integrated web dashboard and chat** with a Go Control Plane and React UI
 - 📅 **Proactive assistant capabilities** including scheduled reminders and weather briefings
 - 🌍 **Multi-language support** with runtime FR/EN configuration
 
@@ -305,9 +305,9 @@ Apple Silicon systems (Mac Mini / Mac Studio M-series) provide an excellent plat
 
 | Capability | Engineering Benefit |
 |---|---|
-| **Neural Engine (16+ TOPS)** | Accelerated Whisper MLX inference (~0.5s STT) |
+| **Apple GPU / Metal** | Accelerated Whisper inference through MLX |
 | **Unified Memory Architecture** | Simultaneous STT + LLM + backend execution |
-| **Metal GPU Acceleration** | Native Ollama acceleration |
+| **Ollama Metal Acceleration** | Local LLM inference on the Apple GPU |
 | **Low Power Consumption** | Suitable for 24/7 always-on deployment |
 | **macOS Stability** | Reliable long-running home server environment |
 
@@ -367,6 +367,7 @@ Whisper contextual hints (`WHISPER_HINT`) are dynamically generated at startup b
 
 3. Forced phonetic vocabulary
    └─ config/phonetic.yaml → force_vocabulary
+```
 
 This mechanism improves recognition accuracy for:
 
@@ -392,62 +393,59 @@ Minimal configuration changes are required:
 
 The runtime architecture remains unchanged, enabling language adaptation entirely through configuration without requiring backend code modifications.
 
-```
-
 ## 📂 Project Structure
 
 ```text
 homecortex/
-├── server.py                    # Main FastAPI server
-├── prompt.txt                   # Kira personality system prompt
-├── prompt_suffix_fr.txt         # French runtime context and rules
-├── prompt_suffix_en.txt         # English runtime context and rules
+├── server.py                     # Main FastAPI voice and automation server
+├── install.sh                    # Configuration-driven installer
+├── update.sh                     # Safe updater with mandatory backup
+├── pyproject.toml                # Python project and optional feature groups
+├── prompt_{fr,en}.txt            # Kira system prompts
+├── prompt_suffix_{fr,en}.txt     # Language-specific runtime rules
 │
-├── backends/
-│   ├── stt.py                   # Speech-to-Text (Whisper MLX / faster-whisper)
-│   ├── llm.py                   # LLM inference (Ollama / llama.cpp)
-│   ├── tts.py                   # Text-to-Speech (Piper / ElevenLabs / XTTS)
-│   ├── memory.py                # SQLite conversational memory
-│   └── speaker.py               # Speaker identification (pyannote.audio)
+├── backends/                     # STT, LLM, TTS, memory and speaker backends
+│   ├── stt.py
+│   ├── llm.py
+│   ├── tts.py
+│   ├── memory.py
+│   └── speaker.py
 │
-├── services/
-│   ├── config_loader.py         # Centralized YAML configuration loader
-│   ├── get_ha_state.py          # Home Assistant state retrieval
-│   ├── get_weather.py           # Weather service (wttr.in)
-│   ├── web_search.py            # DuckDuckGo web search
-│   ├── ha_entities_loader.py    # Home Assistant entity alias loader
-│   └── proactive.py             # Scheduled announcements (APScheduler)
+├── services/                     # Configuration, Home Assistant and tools
+│   ├── config_loader.py
+│   ├── get_ha_state.py
+│   ├── get_weather.py
+│   ├── web_search.py
+│   └── ha_entities_loader.py
 │
-├── config/
-│   ├── kira.yaml                # ⚙️ Main configuration
-│   ├── room_groups.yaml         # 💡 Room grouping definitions
-│   ├── personas.yaml            # 👥 Household users and name variants
-│   ├── phonetic.yaml            # 🔤 Whisper phonetic correction rules
-│   ├── tools_config.json        # 🛠️ LLM tool configuration
-│   ├── satellites.json          # 📡 Satellite tokens and room mapping
-│   ├── lang/
-│   │   ├── fr.yaml              # 🇫🇷 French keywords and responses
-│   │   └── en.yaml              # 🇬🇧 English keywords and responses
-│   └── kira_memory.db           # SQLite memory database (auto-generated)
+├── config/                       # Repository configuration defaults
+│   ├── kira.yaml
+│   ├── room_groups.yaml
+│   ├── personas.yaml
+│   ├── phonetic.yaml
+│   ├── tools_config_{fr,en}.json
+│   ├── satellites.json
+│   └── lang/
 │
-├── models/
-│   ├── piper/                   # Piper TTS voice models (.onnx + .json)
-│   │   ├── fr_FR-siwis-medium.onnx        # French neural voice (recommended)
-│   │   ├── fr_FR-siwis-medium.onnx.json   # Model config
-│   │   └── en_US-lessac-medium.onnx       # English neural voice (optional)
-│   │
-│   └── xtts/                    # XTTS v2 voice cloning samples (optional)
-│       └── speaker_kira.wav     # 20–30s reference recording for voice cloning
+├── control-plane/                # Go management API
+│   ├── main.go
+│   ├── management.go
+│   ├── backups.go
+│   └── web/                      # React dashboard (FR/EN)
+│       ├── src/
+│       └── public/
 │
-├── HA/
-│   └── core.entity_registry     # Home Assistant entity registry cache
+├── deploy/
+│   ├── macos/                    # launchd templates and installer
+│   └── linux/                    # systemd templates and installer
 │
-└── kira-web/                    # Web interface (Go)
-    ├── kira-web-main.go
-    ├── kira-web.json
-    ├── templates/index.html
-    ├── static/
-    └── locales/
+├── scripts/                      # Build, validation, Ollama and maintenance
+├── requirements/                 # Platform-specific dependency locks
+├── init.example/                 # Safe template for the private init/ kit
+├── docs/                         # Installation and Control Plane guides
+├── assets/brand/                 # HomeCortex visual identity
+├── models/                       # Optional local voice assets
+└── HA/                           # Home Assistant entity registry cache
 ```
 
 
@@ -468,7 +466,7 @@ homecortex/
 
 ### Requirements
 
-- macOS with Apple Silicon (M1/M2/M3/M4) or Linux x86_64
+- macOS with Apple Silicon (M1/M2/M3/M4) or Linux ARM64
 - Python 3.11+ (3.14 not supported for XTTS)
 - [Ollama](https://ollama.com/download) installed (strict external prerequisite)
 - Home Assistant instance on local network
@@ -621,126 +619,48 @@ sudo apt install espeak-ng
 
 ## 🚀 Running the server
 
-### Option A — pm2 (recommended for macOS and Linux)
+The v1.2 installer registers both Kira Core and the Control Plane with the
+native service manager. PM2 is not required:
 
-[pm2](https://pm2.keymetrics.io/) is a Node.js process manager that keeps the server running, restarts it on crash, and provides live log streaming. It is the recommended way to run Kira on both macOS and Linux.
+- macOS Apple Silicon uses per-user `launchd` agents;
+- Linux ARM64 uses `systemd` services.
 
-**Install pm2:**
+After installation, open the local dashboard:
+
+```text
+http://127.0.0.1:3210
+```
+
+The dashboard provides health status, start/stop/restart controls, live logs,
+resource gauges, configuration and prompt editing, chat, Ollama model control,
+and backup/restore.
+
+### macOS service commands
 
 ```bash
-npm install -g pm2
+launchctl print gui/$(id -u)/io.homecortex.core
+launchctl print gui/$(id -u)/io.homecortex.control
+
+launchctl kickstart -k gui/$(id -u)/io.homecortex.core
+launchctl kickstart -k gui/$(id -u)/io.homecortex.control
 ```
 
-**Start the server:**
+Runtime logs are stored in:
+
+```text
+~/Library/Application Support/HomeCortex/logs/
+```
+
+### Linux service commands
 
 ```bash
-cd /usr/local/whisper-server
-source venv/bin/activate
-
-pm2 start "venv/bin/uvicorn server:app --host 0.0.0.0 --port 8000" \
-    --name whisper-server \
-    --cwd /usr/local/whisper-server
-
-pm2 save
+sudo systemctl status homecortex-core homecortex-control
+sudo systemctl restart homecortex-core homecortex-control
+sudo journalctl -u homecortex-core -u homecortex-control -f
 ```
 
-**Auto-start on boot:**
-
-```bash
-# Generate and install the startup script
-pm2 startup
-
-# Run the command that pm2 prints, then save the process list
-pm2 save
-```
-
-**Daily commands:**
-
-```bash
-pm2 status                        # show all running processes
-pm2 logs whisper-server           # live log stream
-pm2 logs whisper-server --lines 50 # last 50 lines
-pm2 restart whisper-server        # restart after a config change
-pm2 stop whisper-server           # stop without removing
-pm2 delete whisper-server         # remove from pm2 process list
-pm2 monit                         # interactive CPU/memory monitor
-```
-
-**What pm2 brings over a plain `nohup` or `screen`:**
-
-- Automatic restart on crash or unhandled exception
-- Log rotation with timestamps (`~/.pm2/logs/`)
-- CPU and memory monitoring via `pm2 monit`
-- Single command restart after `config/kira.yaml` changes
-- Process persists across SSH session disconnects
-- `pm2 startup` generates a system service automatically
-
----
-
-### Option B — systemd (Linux only)
-
-On a Raspberry Pi or any Linux server, you can run Kira as a native systemd service instead of pm2.
-
-Create the service file:
-
-```bash
-sudo nano /etc/systemd/system/kira.service
-```
-
-```ini
-[Unit]
-Description=Kira Voice Assistant Server
-After=network.target ollama.service
-
-[Service]
-Type=simple
-User=pi
-WorkingDirectory=/usr/local/whisper-server
-ExecStart=/usr/local/whisper-server/venv/bin/uvicorn server:app --host 0.0.0.0 --port 8000
-Restart=always
-RestartSec=5
-EnvironmentFile=/usr/local/whisper-server/.env
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable kira
-sudo systemctl start kira
-```
-
-Daily commands:
-
-```bash
-sudo systemctl status kira        # show status
-sudo journalctl -u kira -f        # live log stream
-sudo journalctl -u kira -n 50     # last 50 lines
-sudo systemctl restart kira       # restart after a config change
-sudo systemctl stop kira          # stop the service
-```
-
----
-
-### pm2 vs systemd — quick comparison
-
-| Feature | pm2 | systemd |
-|---|---|---|
-| Platform | macOS + Linux | Linux only |
-| Auto-restart on crash | ✅ | ✅ |
-| Boot auto-start | ✅ `pm2 startup` | ✅ `systemctl enable` |
-| Live logs | ✅ `pm2 logs` | ✅ `journalctl -f` |
-| CPU/memory monitor | ✅ `pm2 monit` | ❌ |
-| Multiple processes | ✅ | ✅ |
-| Setup complexity | Low | Medium |
-| Requires Node.js | Yes | No |
-
-> **Recommendation**: use pm2 on macOS (no systemd available) and on Linux developer machines for its interactive monitoring. Use systemd on production Linux servers for tighter OS integration and no Node.js dependency.
+For normal operation, prefer the dashboard controls. The native commands are
+useful for diagnostics when the Control Plane itself is unavailable.
 
 ---
 
@@ -868,53 +788,61 @@ This separation between voice satellites and textual interaction layers enables 
 
 ## 🚀 Next Steps & Roadmap
 
-HomeCortex is actively evolving. The following improvements are planned to enhance performance, reduce latency, and enable edge intelligence on satellites.
+HomeCortex development prioritizes reliable local operation and measured
+improvements. Optimization work is accepted only when reproducible benchmarks
+show a real end-to-end benefit on supported hardware.
 
-### Phase 1: Neural Optimization 
-Implement PyTorch/TensorFlow quantization and pruning for **30-50% latency reduction** without retraining.
+### Phase 1: v1.2 deployment lifecycle
 
-- [ ] Export qwen2.5:3b to ONNX INT8 quantization
-- [ ] Benchmark latency improvement on Apple Silicon
-- [ ] Test model pruning (30% weight reduction)
-- [ ] Integrate quantized model into production
-
-**Expected:** LLM inference 2.0s → 1.2s
+- [x] Configuration-driven installation
+- [x] Native `launchd` and `systemd` service management
+- [x] Safe updates with automatic pre-update backup
+- [x] Dashboard backup and restoration
+- [x] Strict Ollama prerequisite and required-model provisioning
+- [ ] Safe uninstaller with keep-data and full-removal modes
+- [ ] Automated installation and rollback integration tests
 
 ---
 
-### Phase 2: Satellite AI Agents 
-Deploy lightweight TinyLLM agents on ESP32-S3 satellites for **local decision-making** and **5x faster response times**.
+### Phase 2: Linux ARM64 and Arduino VENTUNO Q validation
+
+- [ ] Validate the production VENTUNO Q Linux image and accelerator APIs
+- [ ] Freeze a tested ARM64 Python dependency lock
+- [ ] Benchmark STT, LLM and TTS backends on the target hardware
+- [ ] Finalize storage, service and hardware-monitoring integration
+- [ ] Document migration between macOS and VENTUNO installations
+
+---
+
+### Phase 3: Evidence-based latency optimization
+
+- [ ] Add per-stage STT, routing, LLM, Home Assistant and TTS timings
+- [ ] Establish repeatable benchmarks on M1 16 GB and Mac Studio systems
+- [ ] Compare model size, context length and Ollama runtime settings
+- [ ] Profile safe pipeline concurrency and response caching
+- [ ] Keep only optimizations that improve end-to-end latency and stability
+
+Quantization, pruning or alternative runtimes may be evaluated, but they are
+not roadmap commitments until measurements demonstrate a useful gain.
+
+---
+
+### Phase 4: Satellite local fallback
 
 - [ ] Design intent classification engine (light, temperature, blinds)
-- [ ] Implement local fallback mechanism
+- [ ] Implement a deterministic local fallback for essential commands
 - [ ] Create entity mapping configuration
-- [ ] Deploy agents to ESP32-S3 devices
-
-**Expected:** Local response time <150ms (vs 800ms server round-trip)
-
----
-
-### Phase 3: Async Pipeline Optimization 
-Refactor server pipeline for parallel execution: STT + HA state, LLM + TTS simultaneously.
-
-- [ ] Convert server.py to async/await architecture
-- [ ] Implement parallel task execution
-- [ ] Add response caching and KV-cache optimization
-- [ ] Load test with 10+ concurrent satellites
-
-**Expected:** End-to-end latency 3.2s → 2.0s
+- [ ] Test offline and degraded-network behavior on ESP32-S3 satellites
+- [ ] Evaluate TinyML only if it fits the latency, memory and reliability budget
 
 ---
 
-### Phase 4: Domain Fine-tuning 
-Fine-tune models on smart home French vocabulary for **15-20% intent recognition improvement**.
+### Phase 5: Evaluation and domain adaptation
 
-- [ ] Collect 5,000 smart home conversation dataset
-- [ ] Fine-tune qwen2.5:3b on domain data
-- [ ] Evaluate intent classification accuracy
-- [ ] Deploy fine-tuned model to production
-
-**Expected:** Intent recognition 85% → 95% accuracy
+- [ ] Build an anonymized multilingual smart-home evaluation set
+- [ ] Measure command accuracy, tool selection and response quality
+- [ ] Improve aliases, prompts and phonetic rules from observed failures
+- [ ] Consider fine-tuning only if configuration and prompting plateau
 
 
 
