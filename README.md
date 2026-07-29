@@ -635,6 +635,10 @@ The dashboard provides health status, start/stop/restart controls, live logs,
 resource gauges, configuration and prompt editing, chat, Ollama model control,
 and backup/restore.
 
+<p align="center">
+  <img src="imgs/dashboard.png" width="1100" alt="HomeCortex Control Plane dashboard overview">
+</p>
+
 ### macOS service commands
 
 ```bash
@@ -666,17 +670,25 @@ useful for diagnostics when the Control Plane itself is unavailable.
 
 ## 📍 API Endpoints
 
-All endpoints require the `X-Token` header with a valid satellite or chat token configured in `config/satellites.json`.
+HomeCortex exposes two local HTTP APIs:
 
-### Voice processing
+- **Kira Core** on port `8000` for voice, chat and assistant operations;
+- **Control Plane** on `127.0.0.1:3210` for local administration.
 
-| Method | Endpoint | Description |
+Kira Core routes marked **Satellite** require an `X-Token` registered in
+`config/satellites.json`. Routes marked **Admin** require the private
+`KIRA_API_TOKEN`. The health endpoint is intentionally unauthenticated.
+
+### Kira Core — voice and chat
+
+| Method | Endpoint | Access | Description |
 |---|---|---|
-| `POST` | `/transcribe` | Receive WAV audio from a satellite, run STT + routing + TTS pipeline, return JSON with reply and WAV URL |
-| `POST` | `/tts` | Synthesize text to WAV audio (used by satellites to fetch the audio response) |
-| `POST` | `/chat` | Text-only interface — same routing pipeline as `/transcribe` without the STT step |
+| `POST` | `/transcribe` | Satellite | Process raw WAV audio through STT, routing, Home Assistant and response generation |
+| `POST` | `/tts` | Satellite | Synthesize a UTF-8 text body and return WAV audio |
+| `POST` | `/chat` | Satellite, chat or admin | Run the text-only assistant pipeline without STT |
 
 **Example `/transcribe` response:**
+
 ```json
 {
   "status":       "success",
@@ -690,15 +702,25 @@ All endpoints require the `X-Token` header with a valid satellite or chat token 
 }
 ```
 
-### Speaker identification
+### Kira Core — administration
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/enroll` | Register a voice profile — send a WAV file with `name` field |
-| `GET` | `/speakers` | List all enrolled voice profiles |
-| `DELETE` | `/speakers/{name}` | Delete a voice profile by name |
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/satellites` | Admin | List registered voice satellites |
+| `GET` | `/debug-auth` | Diagnostic | Check whether a supplied satellite token is recognized |
+| `DELETE` | `/memory/{satellite_id}` | Admin | Clear the active conversation history for one satellite |
+| `GET` | `/memory/stats` | Admin | Return learned query statistics |
+| `GET` | `/memory/facts` | Admin | List persistent memory facts |
+| `DELETE` | `/memory/facts/{fact_id}` | Admin | Delete one persistent fact |
+| `DELETE` | `/tts/cache` | Admin | Clear the generated speech cache |
+| `POST` | `/alert` | Admin | Generate and push a proactive announcement to a satellite |
+| `POST` | `/enroll` | Admin | Register or update a speaker voice profile |
+| `GET` | `/speakers` | Admin | List registered speaker profiles |
+| `DELETE` | `/speakers/{name}` | Admin | Delete a speaker profile |
+| `GET` | `/health` | Public/local | Report loaded backends, satellites and memory counters |
 
 **Example enrollment:**
+
 ```bash
 curl -X POST http://localhost:8000/enroll \
      -H "X-Token: YOUR_TOKEN" \
@@ -706,52 +728,53 @@ curl -X POST http://localhost:8000/enroll \
      -F "audio=@/tmp/sample_30s.wav"
 ```
 
-### Memory
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/memory/facts` | List all stored facts with their IDs |
-| `DELETE` | `/memory/facts/{id}` | Delete a specific fact by ID |
-
-### Proactive announcements
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/alert` | Push a text announcement to a specific satellite room |
-
 **Example alert:**
+
 ```bash
 curl -X POST http://localhost:8000/alert \
      -H "X-Token: YOUR_TOKEN" \
      -H "Content-Type: application/json" \
-     -d '{"room": "salon", "message": "Dinner is ready."}'
+     -d '{"room": "salon", "text": "Dinner is ready."}'
 ```
-
-### TTS cache
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `DELETE` | `/tts/cache` | Clear the TTS response cache |
-| `GET` | `/tts/cache/stats` | Cache statistics (entries, total hits, size) |
-
-### System
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | Server health check — returns status, loaded backends, entity count, uptime |
 
 **Example `/health` response:**
+
 ```json
 {
-  "status":   "ok",
-  "stt":      "mlx_whisper",
-  "llm":      "ollama (qwen2.5:3b)",
-  "tts":      "elevenlabs",
-  "speaker":  false,
-  "entities": 78,
-  "uptime":   "3h 42m"
+  "status": "ok",
+  "satellites": 6,
+  "model_stt": "mlx_whisper",
+  "model_llm": "ollama",
+  "memory_facts": 0,
+  "memory_queries": 0,
+  "model_tts": "elevenlabs"
 }
 ```
+
+### Control Plane — local administration
+
+The Control Plane refuses non-loopback clients and does not expose `.env`
+secrets through its API.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/v1/system` | Host and Control Plane information |
+| `GET` | `/api/v1/services` | Kira, Ollama and Home Assistant health |
+| `POST` | `/api/v1/services/{id}/{action}` | Start, stop or restart a managed service |
+| `GET` | `/api/v1/events` | Service-state SSE stream |
+| `GET` | `/api/v1/logs/stream?service=...` | Masked live-log SSE stream |
+| `GET/PUT` | `/api/v1/config` | Read or atomically replace `kira.yaml` |
+| `GET/PUT` | `/api/v1/files/{id}` | Manage an allow-listed configuration or prompt file |
+| `GET` | `/api/v1/ollama/model` | Configured model and loaded state |
+| `POST` | `/api/v1/ollama/model/{action}` | Load, unload or restart the configured model |
+| `GET` | `/api/v1/diagnostics` | Platform and acceleration diagnostics |
+| `GET` | `/api/v1/resources` | CPU, memory, storage and network metrics |
+| `GET/POST` | `/api/v1/backups` | List or create local recovery archives |
+| `POST` | `/api/v1/backups/{name}/restore` | Restore a backup and restart Kira |
+| `POST` | `/api/v1/chat` | Authenticated proxy to Kira Core chat |
+
+See [`docs/CONTROL-PLANE.md`](docs/CONTROL-PLANE.md) for implementation and
+safety details.
 
 ---
 
@@ -760,6 +783,10 @@ curl -X POST http://localhost:8000/alert \
 HomeCortex v1.2 integrates its text conversation interface directly into the
 local Control Plane dashboard. The former standalone `chatbox/` service is no
 longer required.
+
+<p align="center">
+  <img src="imgs/chat.png" width="1100" alt="HomeCortex Control Plane chat with Kira">
+</p>
 
 ### Features
 
