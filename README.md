@@ -826,8 +826,8 @@ show a real end-to-end benefit on supported hardware.
 - [x] Safe updates with automatic pre-update backup
 - [x] Dashboard backup and restoration
 - [x] Strict Ollama prerequisite and required-model provisioning
-- [ ] Safe uninstaller with keep-data and full-removal modes
-- [ ] Automated installation and rollback integration tests
+- [x] Safe uninstaller with keep-data and full-removal modes
+- [x] Automated installation and rollback integration tests
 
 ---
 
@@ -843,15 +843,9 @@ show a real end-to-end benefit on supported hardware.
 
 ### Phase 3: Evidence-based latency optimization
 
-- [ ] Add per-stage STT, routing, LLM, Home Assistant and TTS timings
-- [ ] Establish repeatable benchmarks on M1 16 GB and Mac Studio systems
-- [ ] Compare model size, context length and Ollama runtime settings
-- [ ] Profile safe pipeline concurrency and response caching
-- [ ] Keep only optimizations that improve end-to-end latency and stability
-
-Quantization, pruning or alternative runtimes may be evaluated, but they are
-not roadmap commitments until measurements demonstrate a useful gain.
-
+- [ ] Network latency diagnosis (WiFi/Powerline) — measure `/transcribe` and `/tts`
+      separately from the satellite to confirm the source of the ~6s
+      discrepancy between the measured pipeline (~2.9s) and the actual experience (~9s)
 ---
 
 ### Phase 4: Satellite local fallback

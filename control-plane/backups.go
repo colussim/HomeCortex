@@ -132,7 +132,7 @@ func (s *server) createBackup(ctx context.Context, includeTTS bool, reason strin
 		return backupInfo{}, err
 	}
 	now := time.Now()
-	name := "homecortex-" + now.Format("20060102-150405") + ".zip"
+	name := "homecortex-" + now.Format("20060102-150405.000000000") + ".zip"
 	path := filepath.Join(directory, name)
 	temp, err := os.CreateTemp(directory, ".homecortex-backup-*.zip")
 	if err != nil {
@@ -331,7 +331,7 @@ func (s *server) restoreBackup(ctx context.Context, name string) error {
 			return err
 		}
 	}
-	if definition, ok := s.findService("homecortex-core"); ok {
+	if definition, ok := s.findService("homecortex-core"); ok && definition.Managed {
 		if err := manageService(ctx, definition, "restart"); err != nil {
 			return fmt.Errorf("restored but Kira restart failed: %w", err)
 		}

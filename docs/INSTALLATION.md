@@ -106,6 +106,44 @@ have not changed:
 
 If backup creation fails, the update stops before modifying the runtime.
 
+## Uninstalling
+
+The safe default removes HomeCortex services and executable components while
+preserving secrets, configuration, prompts, databases, models, Home Assistant
+cache, logs and backups:
+
+```bash
+./uninstall.sh --keep-data
+```
+
+The same command is installed in the runtime as
+`bin/homecortex-uninstall`. A complete removal requires an explicit purge mode
+and confirmation:
+
+```bash
+./uninstall.sh --purge
+```
+
+Use `--dry-run` to inspect the resolved platform, installation path and
+preservation policy without changing anything. For unattended automation,
+`--yes` skips the prompt. The uninstaller validates the installation root and
+refuses broad or symbolic-link targets. It never removes Ollama, Ollama models,
+Home Assistant or system Python.
+
+## Lifecycle integration test
+
+The isolated macOS lifecycle test covers initialization, installation, update
+with runtime configuration preservation, backup, restore, keep-data uninstall,
+reinstallation and confirmed purge:
+
+```bash
+./tests/integration-lifecycle.sh
+```
+
+It creates a temporary runtime under the platform temporary directory and
+disables host service management for that isolated Control Plane. It does not
+operate on the production installation.
+
 ## VENTUNO/Linux ARM64
 
 The planned layout is:

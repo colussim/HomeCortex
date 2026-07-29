@@ -193,7 +193,9 @@ else
   exit 6
 fi
 cp "$SCRIPT_DIR/scripts/homecortex-maintenance.sh" "$INSTALL_DIR/bin/homecortex-maintenance"
+cp "$SCRIPT_DIR/uninstall.sh" "$INSTALL_DIR/bin/homecortex-uninstall"
 chmod 755 "$INSTALL_DIR/bin/homecortex-maintenance"
+chmod 755 "$INSTALL_DIR/bin/homecortex-uninstall"
 
 if [ "$SKIP_SERVICES" -eq 0 ]; then
   if [ "$PLATFORM" = macos-arm64 ]; then

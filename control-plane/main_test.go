@@ -1,11 +1,36 @@
 package main
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 )
+
+func TestBackupNamesDoNotCollide(t *testing.T) {
+	root := t.TempDir()
+	if err := os.WriteFile(filepath.Join(root, ".env"), []byte("TOKEN=test\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	server := newServer(root, "127.0.0.1:0", "http://127.0.0.1:9")
+	first, err := server.createBackup(context.Background(), false, "first")
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := server.createBackup(context.Background(), false, "second")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.Name == second.Name {
+		t.Fatalf("backup names collided: %s", first.Name)
+	}
+	for _, name := range []string{first.Name, second.Name} {
+		if _, err := os.Stat(filepath.Join(server.backupDirectory(), name)); err != nil {
+			t.Fatalf("backup %s is missing: %v", name, err)
+		}
+	}
+}
 
 func TestMaskSecrets(t *testing.T) {
 	input := `token=sk_example-secret authorization="Bearer abcdef" github=ghp_example`

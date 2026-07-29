@@ -7,6 +7,7 @@ INSTALL_DIR=""
 APPLY_INIT=0
 SKIP_DEPENDENCIES=0
 SKIP_BUILD=0
+SKIP_SERVICES=0
 
 usage() {
   cat <<'EOF'
@@ -21,6 +22,7 @@ secrets and databases are preserved unless --apply-init is explicitly used.
   --apply-init          Replace runtime configuration with the init kit
   --skip-dependencies   Keep the existing Python environment
   --skip-build          Reuse the existing Control Plane build
+  --skip-services       Do not refresh or restart host services
   -h, --help            Show this help
 EOF
 }
@@ -32,6 +34,7 @@ while [ "$#" -gt 0 ]; do
     --apply-init) APPLY_INIT=1; shift ;;
     --skip-dependencies) SKIP_DEPENDENCIES=1; shift ;;
     --skip-build) SKIP_BUILD=1; shift ;;
+    --skip-services) SKIP_SERVICES=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -63,6 +66,7 @@ set -- --init-dir "$INIT_DIR" --install-dir "$INSTALL_DIR" --non-interactive
 [ "$APPLY_INIT" -eq 1 ] || set -- "$@" --preserve-runtime-config
 [ "$SKIP_DEPENDENCIES" -eq 0 ] || set -- "$@" --skip-dependencies
 [ "$SKIP_BUILD" -eq 0 ] || set -- "$@" --skip-build
+[ "$SKIP_SERVICES" -eq 0 ] || set -- "$@" --skip-services
 
 echo "Updating HomeCortex..."
 "$SCRIPT_DIR/install.sh" "$@"

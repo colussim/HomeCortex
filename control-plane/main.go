@@ -88,6 +88,7 @@ func main() {
 }
 
 func newServer(root, addr, coreURL string) *server {
+	manageCore := os.Getenv("HOME_CORTEX_DISABLE_SERVICE_MANAGEMENT") != "1"
 	return &server{
 		root:       root,
 		addr:       addr,
@@ -98,7 +99,7 @@ func newServer(root, addr, coreURL string) *server {
 		services: []serviceDefinition{
 			{
 				ID: "homecortex-core", Name: "Kira Core", HealthURL: coreURL + "/health",
-				Managed: true, ManagerID: "io.homecortex.core",
+				Managed: manageCore, ManagerID: "io.homecortex.core",
 				LogFile: "logs/core.log", Description: "Pipeline vocal, Home Assistant et mémoire",
 			},
 			{

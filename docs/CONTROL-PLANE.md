@@ -98,5 +98,5 @@ The same operations are available locally:
 homecortex-maintenance list
 homecortex-maintenance backup
 homecortex-maintenance backup --include-tts
-homecortex-maintenance restore homecortex-YYYYMMDD-HHMMSS.zip
+homecortex-maintenance restore homecortex-YYYYMMDD-HHMMSS.NNNNNNNNN.zip
 ```
