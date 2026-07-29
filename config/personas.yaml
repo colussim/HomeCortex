@@ -7,7 +7,11 @@
 family:
   names:
     - "colussi"
+    - "véronique"
+    - "véronica"
+    - "emmanuel"
     - "golay"
+    - "marc"
  
 # Variantes du wake word / nom de l'assistant
 # Whisper peut transcrire "Kira" de différentes façons

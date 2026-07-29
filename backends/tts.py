@@ -20,7 +20,7 @@ Config from kira.yaml:
     piper_models_dir: /usr/local/whisper-server/models/piper
     piper_speed: 1.0
     cache_enabled: true
-    cache_db: config/tts_cache.db
+    cache_db: data/tts_cache.db
 
 Secrets from .env only:
   ELEVENLABS_API_KEY=sk_...

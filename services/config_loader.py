@@ -135,7 +135,7 @@ class KiraConfig:
 
     @property
     def tts_cache_db(self) -> str:
-        return self._get("tts", "cache_db", default="config/tts_cache.db")
+        return self._get("tts", "cache_db", default="data/tts_cache.db")
 
     # ── Speaker ───────────────────────────────────────────────────────────────
     @property
@@ -165,7 +165,7 @@ class KiraConfig:
     @property
     def memory_db(self) -> str:
         return os.getenv("MEMORY_DB",
-               self._get("memory", "db", default="config/kira_memory.db"))
+               self._get("memory", "db", default="data/kira_memory.db"))
 
     @property
     def memory_max_history(self) -> int:

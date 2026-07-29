@@ -1,0 +1,17 @@
+version: 1
+
+instance:
+  name: homecortex
+  profile: auto
+
+installation:
+  install_speaker_dependencies: false
+  install_proactive_dependencies: true
+  install_service: true
+  start_after_install: true
+  overwrite_existing: false
+  backup_before_update: true
+
+ollama:
+  required: true
+  pull_model: true

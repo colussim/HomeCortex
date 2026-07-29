@@ -142,7 +142,7 @@ def load_satellites_config(file_name="config/satellites.json") -> tuple[dict, li
     print(f"✅ {len(rooms)} known room(s): {rooms}")
     return table, rooms
 
-SYSTEM_PROMPT_FULL = load_prompt_from_file()   # For the LLM (full)
+SYSTEM_PROMPT_FULL = load_prompt_from_file(f"prompt_{LANG.language}.txt")  # For the LLM (full)
 WHISPER_HINT       = load_whisper_hint()        # For Whisper (minimal, anti-hallucination)
 SATELLITES_TABLE, HA_ROOMS = load_satellites_config()
 HA_ENTITIES = load_ha_entities()
@@ -186,14 +186,14 @@ if ROOM_GROUPS and ROOM_GROUPS.groups:
 print(f"✅ {len(ROOM_LIGHT_GROUPS)} room light group(s) configured")
 
 # Proactive scheduler from kira.yaml → proactive.enabled
-try:
-    from services.proactive import start_scheduler as _start_scheduler
-    if KIRA.proactive_enabled:
+if KIRA.proactive_enabled:
+    try:
+        from services.proactive import start_scheduler as _start_scheduler
         _proactive_scheduler = _start_scheduler(SATELLITES_TABLE)
-    else:
-        print("ℹ️  Proactive announcements disabled (kira.yaml → proactive.enabled: false)")
-except Exception as _e:
-    print(f"⚠️  Proactive scheduler not started: {_e}")
+    except Exception as _e:
+        print(f"⚠️  Proactive scheduler not started: {_e}")
+else:
+    print("ℹ️  Proactive announcements disabled (kira.yaml → proactive.enabled: false)")
 
 # Enrich Whisper hint with HA entity names
 # Examples: "Lampe Petit Salon, Volet Salon" → Whisper transcribes proper names better
@@ -476,7 +476,7 @@ def normalize_for_ha(text: str, room: str = "") -> str:
     import re as _re
     text_fixed = text
     for wrong, correct in PHONETIC.corrections.items():
-        text_fixed = _re.sub(rf"(?i)\\b{re.escape(wrong)}\\b", correct, text_fixed)
+        text_fixed = _re.sub(rf"(?i)\b{_re.escape(wrong)}\b", correct, text_fixed)
     if text_fixed != text:
         print(f"  Phonetic correction : '{text}' → '{text_fixed}'")
         text = text_fixed

@@ -6,31 +6,31 @@
   ],
   "satellites": [
     {
-      "token": "your_token_1",
+      "token": "7Aplz8ffMk9d1yEazsAPYZXbRDOtkREGr8VQzq778kihTJirQWyA0g9rLXpa2Ewp",
       "id": 1,
       "room": "entrée",
       "location": "hall d'entrée"
     },
     {
-      "token": "your_token_2",
+      "token": "8Bplz8ffMk9d1yEazsAPYZXbRDOtkREGr8VQzq778kihTJirQWyA0g9rLXpa2Ewp",
       "id": 2,
       "room": "salon",
       "location": "salon principal"
     },
     {
-      "token": "your_token_3",
+      "token": "9Cplz8ffMk9d1yEazsAPYZXbRDOtkREGr8VQzq778kihTJirQWyA0g9rLXpa2Ewp",
       "id": 3,
       "room": "chambre",
       "location": "chambre principale"
     },
     {
-      "token": "your_token_4",
+      "token": "ADplz8ffMk9d1yEazsAPYZXbRDOtkREGr8VQzq778kihTJirQWyA0g9rLXpa2Ewp",
       "id": 4,
       "room": "cuisine",
       "location": "cuisine"
     },
     {
-      "token": "your_token_5",
+      "token": "BDplz8ffMk9d1yEazsAPYZXbRDOtkREGr8VQzq778kihTJirQWyA0g9rLXpa2Ewp",
       "id": 5,
       "room": "bureau",
       "location": "bureau / salle de travail"
@@ -38,7 +38,7 @@
   ],
   "chat_clients": [
     {
-      "token": "CHAT__token",
+      "token": "iT2PL9oTkapKKJ3LHl8glQ5hhriA6OIh4eJV2GTJK9YmLfkVJJZ7fSgba1qmwPgO",
       "id": -1,
       "name": "kira-web",
       "description": "Interface web chat",

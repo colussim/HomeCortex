@@ -43,6 +43,11 @@ HA_URL = os.getenv("HA_URL_C", os.getenv("HA_URL", "http://homeassistant.local:8
 HA_TOKEN = os.getenv("HA_TOKEN", "")
 TIMEOUT  = 8
 
+# Always expose a valid alias map. It is populated when a local Home Assistant
+# entity registry is available and remains empty when the offline fallback is
+# used.
+HA_ALIAS_MAP: dict[str, str] = {}
+
 # Domains to retrieve — covers everything Kira can control or query
 DOMAINS = [
     "light",

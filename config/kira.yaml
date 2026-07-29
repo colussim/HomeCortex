@@ -43,10 +43,10 @@ tts:
   elevenlabs_voice_id: 6vTyAgAT8PncODBcLjRf
   elevenlabs_model_id: eleven_turbo_v2_5
   cache_enabled: true
-  cache_db: config/tts_cache.db
+  cache_db: data/tts_cache.db
   # Piper (used if elevenlabs_enabled: false)
   piper_model: fr_FR-siwis-medium
-  piper_models_dir: /usr/local/whisper-server/models/piper
+  piper_models_dir: models/piper
   piper_speaker: 0
   piper_speed: 1.0
   xtts_speaker_wav: models/xtts/speaker_kira.wav
@@ -54,7 +54,7 @@ tts:
 
 # ── Mémoire conversationnelle ─────────────────────────────────────────────────
 memory:
-  db: config/kira_memory.db
+  db: data/kira_memory.db
   max_history: 20               # number of exchanges retained per satellite
   # Adaptation threshold: if a question returns > n times → optimized response
   adaptive_threshold: 5
@@ -67,7 +67,7 @@ speaker:
   # Recommended value from WiFi satellite: 0.40-0.55
   # Recommended value direct microphone        : 0.65-0.75
   model: pyannote/wespeaker-voxceleb-resnet34-LM
-  memory_db: config/kira_memory.db
+  memory_db: data/kira_memory.db
 
 
 # ── Météo ─────────────────────────────────────────────────────────────────────

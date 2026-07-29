@@ -10,6 +10,37 @@
 > **A fully local, privacy first voice assistant backend for Home Assistant.**  
 > No cloud. No subscriptions. No data leaving your network.
 
+> [!NOTE]
+> The `ver1.2` branch introduces an automated, configuration-first deployment
+> flow and a local Go/React Control Plane. ElevenLabs, weather and web-search
+> integrations remain optional network services selected by the operator.
+
+## HomeCortex v1.2 deployment preview
+
+Create a private initialization kit, validate it, then inspect the installation
+plan:
+
+```bash
+./scripts/create-init.sh
+# Edit init/.env, init/config/ and init/prompts/
+./install.sh --init-dir ./init --validate-only
+./install.sh --init-dir ./init --dry-run
+```
+
+Build the local dashboard and Control Plane:
+
+```bash
+./scripts/build-control-plane.sh
+./control-plane/homecortex-control --root "$PWD"
+```
+
+Open `http://127.0.0.1:3210`.
+
+Detailed documentation:
+
+- [Installation and initialization kit](docs/INSTALLATION.md)
+- [Control Plane API and dashboard](docs/CONTROL-PLANE.md)
+
 
 
 ---
@@ -55,7 +86,7 @@ HomeCortex explores the convergence of edge computing, embedded systems, local L
 
 ## 🧠 Memory Architecture
 
-HomeCortex implements a lightweight persistent memory system built on SQLite (`config/kira_memory.db`).
+HomeCortex implements a lightweight persistent memory system built on SQLite (`data/kira_memory.db`).
 
 The architecture combines semantic memory, episodic conversation history, adaptive interaction patterns, speaker profiles, and TTS caching within a unified local database.
 
@@ -439,43 +470,34 @@ homecortex/
 
 - macOS with Apple Silicon (M1/M2/M3/M4) or Linux x86_64
 - Python 3.11+ (3.14 not supported for XTTS)
-- [Ollama](https://ollama.ai) installed
+- [Ollama](https://ollama.com/download) installed (strict external prerequisite)
 - Home Assistant instance on local network
 - ESP32-S3 satellite with ESP-SR framework
 
 ### Quick Start
 
+1. Install and start [Ollama](https://ollama.com/download).
+2. Prepare a private `init/` directory from `init.example/`.
+3. Select the required model in `init/config/kira.yaml`.
+4. Run the HomeCortex installer:
+
 ```bash
-# Clone
-git clone https://github.com/colussim/HomeCortex.git
-cd kira-voice
+./install.sh --init-dir ./init
+```
 
-# Create virtual environment
-python3.11 -m venv venv
-source venv/bin/activate
+HomeCortex does not install Ollama. The installer stops with a clear
+prerequisite error when it is absent, then downloads only the configured model
+when `ollama.pull_model: true` is set in `init/install.yaml`. Existing models
+are never downloaded again.
 
-# Install dependencies
-pip install fastapi uvicorn python-dotenv pyyaml requests
-pip install mlx-whisper                    # STT Apple Silicon
-pip install piper-tts                      # TTS local
-pip install pyannote.audio                 # Speaker ID (optionnel)
-pip install apscheduler pytz               # Annonces proactives (optionnel)
+See [`docs/INSTALLATION.md`](docs/INSTALLATION.md) for the complete automated
+installation and update workflow.
 
-# Configure
-cp .env.example .env
-# Edit .env with your HA URL, token, ElevenLabs key, etc.
-# Adjust kira.yaml according to your setup
-`config/kira.yaml` 
+To update an existing installation while preserving its runtime configuration:
 
-# Copy HA entity registry (for voice aliases)
-mkdir -p HA
-cp /path/to/homeassistant/.storage/core.entity_registry HA/
-
-# Download LLM
-ollama pull qwen2.5:3b
-
-# Start
-python server.py
+```bash
+git pull
+./update.sh --init-dir ./init
 ```
 
 
@@ -813,44 +835,23 @@ curl -X POST http://localhost:8000/alert \
 
 ---
 
-## 💬 Chatbox Web Interface
+## 💬 Control Plane Chat
 
-![chatbox](imgs/webchat.png)
-
-
-HomeCortex includes a lightweight web-based chat interface written in Go, available in:
-
-- [chatbox/](https://github.com/colussim/HomeCortex/tree/main/chatbox?utm_source=chatgpt.com)
-
-The Chatbox interface provides a real-time textual interaction layer for HomeCortex alongside the ESP32-S3 voice satellites.
+HomeCortex v1.2 integrates its text conversation interface directly into the
+local Control Plane dashboard. The former standalone `chatbox/` service is no
+longer required.
 
 ### Features
 
 - Real-time conversation interface
 - Direct interaction with the HomeCortex backend
 - Multi-language support
-- Lightweight Go backend
+- Authenticated proxy through the Control Plane
 - Responsive web UI
 - Session-based conversational context
 - Designed for local/self-hosted deployments
 
-### Configuration
-
-The Chatbox runtime configuration is centralized in:
-
-```text
-chatbox/config/config.json
-```
-
-This configuration file defines:
-
-* backend API endpoint,
-* authentication token,
-* UI behavior,
-* localization settings,
-* runtime parameters.
-
-Purpose
+### Purpose
 
 The Chatbox interface serves multiple roles within the HomeCortex ecosystem:
 

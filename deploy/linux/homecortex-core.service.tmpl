@@ -1,0 +1,16 @@
+[Unit]
+Description=HomeCortex Kira Core
+After=network-online.target
+
+[Service]
+Type=simple
+User=homecortex
+Group=homecortex
+WorkingDirectory=__INSTALL_ROOT__
+EnvironmentFile=/etc/homecortex/homecortex.env
+ExecStart=__INSTALL_ROOT__/.venv/bin/python __INSTALL_ROOT__/app/server.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
