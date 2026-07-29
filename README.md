@@ -11,7 +11,7 @@
 > No cloud. No subscriptions. No data leaving your network.
 
 > [!NOTE]
-> The `ver1.2` branch introduces an automated, configuration-first deployment
+> The v1.2 release introduces an automated, configuration-first deployment
 > flow and a local Go/React Control Plane. ElevenLabs, weather and web-search
 > integrations remain optional network services selected by the operator.
 
@@ -40,6 +40,7 @@ Detailed documentation:
 
 - [Installation and initialization kit](docs/INSTALLATION.md)
 - [Control Plane API and dashboard](docs/CONTROL-PLANE.md)
+- [Release history and changelog](CHANGELOG.md)
 
 
 
