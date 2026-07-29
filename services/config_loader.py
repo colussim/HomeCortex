@@ -489,6 +489,85 @@ class PersonasConfig:
         ])
 
     @property
+    def known_people(self) -> list[dict]:
+        return _get(self._d, "family", "known_people", default=[])
+
+    @property
+    def family_fallback_response(self) -> str:
+        return str(_get(
+            self._d,
+            "family",
+            "fallback_response",
+            default="Cette personne est un membre de la famille.",
+        )).strip()
+
+    @staticmethod
+    def _normalize_person_text(text: str) -> str:
+        import unicodedata
+        normalized = unicodedata.normalize("NFKD", text.casefold())
+        without_accents = "".join(
+            char for char in normalized if not unicodedata.combining(char)
+        )
+        return re.sub(r"[^a-z0-9]+", " ", without_accents).strip()
+
+    def known_person_reply(self, text: str) -> str:
+        normalized = self._normalize_person_text(text)
+        questions = (
+            self._normalize_person_text(pattern)
+            for pattern in self.personal_questions
+        )
+        if not any(question in normalized for question in questions):
+            return ""
+        for person in self.known_people:
+            if not isinstance(person, dict):
+                continue
+            response = str(person.get("response", "")).strip()
+            aliases = person.get("aliases", [])
+            if isinstance(aliases, str):
+                aliases = [aliases]
+            if response and any(
+                self._normalize_person_text(str(alias)) in normalized
+                for alias in aliases
+                if str(alias).strip()
+            ):
+                return response
+        if any(
+            self._normalize_person_text(name) in normalized
+            for name in self.family_names
+            if str(name).strip()
+        ):
+            return self.family_fallback_response
+        return ""
+
+    def prompt_person_reply(self, text: str, prompt: str) -> str:
+        normalized = self._normalize_person_text(text)
+        questions = (
+            self._normalize_person_text(pattern)
+            for pattern in self.personal_questions
+        )
+        if not any(question in normalized for question in questions):
+            return ""
+        pattern = re.compile(
+            r'Quand on te demande qui (?:est|sont)\s+(.+?)\s*:\s*\n'
+            r'\s*→\s*Tu réponds exactement\s*:\s*"([^"]+)"',
+            re.IGNORECASE,
+        )
+        rules: list[tuple[str, str]] = []
+        for subject, response in pattern.findall(prompt):
+            subject = re.split(
+                r"\s+ou\s+qui\s+", subject, maxsplit=1, flags=re.IGNORECASE
+            )[0]
+            candidate = self._normalize_person_text(subject)
+            if candidate:
+                rules.append((candidate, response.strip()))
+        for candidate, response in sorted(
+            rules, key=lambda item: len(item[0]), reverse=True
+        ):
+            if candidate in normalized:
+                return response
+        return ""
+
+    @property
     def assistant_variants(self) -> list[str]:
         return self._d.get("assistant_name_variants", [
             "kira", "kyra", "tyra", "tira"

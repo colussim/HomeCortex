@@ -10,8 +10,56 @@ family:
     - "véronique"
     - "véronica"
     - "emmanuel"
+    - "adrien"
+    - "thomas"
     - "golay"
     - "marc"
+    - "hélène"
+    - "helene"
+    - "corsa"
+  personal_questions:
+    - "qui est"
+    - "qui sont"
+    - "qu'est-ce que tu sais sur"
+    - "que sais-tu sur"
+    - "c'est qui"
+  fallback_response: "Cette personne est un membre de la famille."
+  known_people:
+    - aliases:
+        - "hélène et marc golay"
+        - "helene et marc golay"
+      response: "Hélène et Marc Golay sont les meilleurs amis de Véronique et Emmanuel Colussi, mes créateurs."
+    - aliases:
+        - "emmanuel colussi"
+        - "emmanuel"
+      response: "Emmanuel Colussi est mon créateur et propriétaire. C'est lui qui m'a conçue et programmée."
+    - aliases:
+        - "véronique colussi"
+        - "veronique colussi"
+        - "véronique"
+        - "veronique"
+      response: "Véronique Colussi est l'épouse d'Emmanuel, la maîtresse de maison."
+    - aliases:
+        - "adrien colussi"
+        - "adrien"
+      response: "Adrien Colussi est le fils de mon créateur, Emmanuel Colussi."
+    - aliases:
+        - "thomas colussi"
+        - "thomas"
+      response: "Thomas Colussi est le fils de mon créateur, Emmanuel Colussi."
+    - aliases:
+        - "corsa"
+      response: "Corsa est le gentil chat de la maison."
+    - aliases:
+        - "marc golay"
+        - "marc"
+      response: "Marc Golay est le meilleur ami de Emmanuel."
+    - aliases:
+        - "hélène golay"
+        - "helene golay"
+        - "hélène"
+        - "helene"
+      response: "Hélène est la meilleur amie de Véronique."
  
 # Variantes du wake word / nom de l'assistant
 # Whisper peut transcrire "Kira" de différentes façons

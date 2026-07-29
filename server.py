@@ -729,6 +729,17 @@ def router_llm(user_text: str, satellite: dict) -> tuple[str, str, bool]:
     location = satellite.get("location", room)
     sat_id   = satellite["id"]
 
+    known_reply = (
+        PERSONAS.prompt_person_reply(user_text, SYSTEM_PROMPT_FULL)
+        or PERSONAS.known_person_reply(user_text)
+    )
+    if known_reply:
+        print("  ⚡ Bypass known person: deterministic local response")
+        push_memory(sat_id, "user", user_text)
+        push_memory(sat_id, "assistant", known_reply)
+        memory.save_exchange(sat_id, user_text, known_reply)
+        return "SPEECH", known_reply, False
+
     # Speaker context from LANG (multilingual)
     speaker_ctx = ""
     if satellite.get("speaker"):
